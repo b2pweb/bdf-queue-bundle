@@ -1,0 +1,160 @@
+parameters:
+  bdf_queue.destinations: []
+  bdf_queue.connections: []
+  bdf_queue.default_connection: ''
+  bdf_queue.connection_definition_id: 'bdf_queue.connection_definition.%s'
+
+services:
+  # Destination
+  bdf_queue.destination_manager:
+    alias: 'Bdf\Queue\Destination\DestinationManager'
+    public: true
+
+  Bdf\Queue\Destination\DestinationManager:
+    public: true
+    class: 'Bdf\Queue\Destination\DestinationManager'
+    arguments: ['@bdf_queue.connection_factory', '@bdf_queue.destination_factory']
+
+  Bdf\Queue\Destination\DsnDestinationFactory:
+    class: 'Bdf\Queue\Destination\DsnDestinationFactory'
+    arguments: ['@bdf_queue.connection_factory']
+
+  Bdf\Queue\Destination\ConfigurationDestinationFactory:
+    class: 'Bdf\Queue\Destination\ConfigurationDestinationFactory'
+    arguments: ['%bdf_queue.destinations%', '@Bdf\Queue\Destination\DsnDestinationFactory']
+
+  bdf_queue.destination_factory:
+    class: 'Bdf\Queue\Destination\CachedDestinationFactory'
+    arguments: ['@Bdf\Queue\Destination\ConfigurationDestinationFactory']
+
+
+  #Connection factory
+  bdf_queue.connection_factory:
+    alias: 'Bdf\QueueBundle\ConnectionFactory\ConnectionDriverFactory'
+
+  Bdf\QueueBundle\ConnectionFactory\ConnectionDriverFactory:
+    class: 'Bdf\QueueBundle\ConnectionFactory\ConnectionDriverFactory'
+    arguments:
+      - '@service_container'
+      - '%bdf_queue.default_connection%'
+      - '%bdf_queue.connection_definition_id%'
+
+
+  #Serializer
+  bdf_queue.serializer.native:
+    class: 'Bdf\Queue\Serializer\Serializer'
+
+  bdf_queue.serializer.bdf:
+    class: 'Bdf\Queue\Serializer\BdfSerializer'
+    arguments: ['@?bdf_serializer']
+
+  bdf_queue.serializer.bdf_json:
+    class: 'Bdf\Queue\Serializer\BdfSerializer'
+    arguments:
+      - '@?bdf_serializer'
+      - 'json'
+      - [include_type: false, remove_default_value: false]
+
+
+  #Consumer
+  bdf_queue.receiver.factory:
+    class: 'Bdf\Queue\Consumer\Receiver\Builder\ReceiverFactory'
+    arguments: ['@service_container', '@bdf_queue.instantiator']
+
+  bdf_queue.receiver.loader:
+    class: 'Bdf\QueueBundle\Consumption\ReceiverLoader'
+    arguments:
+      - '@service_container'
+      - []
+      - '@bdf_queue.receiver.factory'
+
+
+  #Instantiator
+  bdf_queue.instantiator:
+    alias: 'Bdf\Instantiator\Instantiator'
+
+  Bdf\Instantiator\InstantiatorInterface:
+    public: true
+    alias: 'Bdf\Instantiator\Instantiator'
+
+  Bdf\Instantiator\Instantiator:
+    public: true
+    class: 'Bdf\Instantiator\Instantiator'
+    arguments: ['@service_container']
+
+
+  # Failer
+  bdf_queue.failer:
+    alias: 'Bdf\Queue\Failer\MemoryFailedJobStorage'
+
+  Bdf\Queue\Failer\MemoryFailedJobStorage:
+    class: 'Bdf\Queue\Failer\MemoryFailedJobStorage'
+
+
+  # Commands
+  bdf_queue.failer.show_command:
+    class: 'Bdf\Queue\Console\Command\Failer\ShowCommand'
+    arguments:
+      - '@bdf_queue.failer'
+    tags:
+      - { name: 'console.command' }
+
+  bdf_queue.failer.flush_command:
+    class: 'Bdf\Queue\Console\Command\Failer\FlushCommand'
+    arguments:
+      - '@bdf_queue.failer'
+    tags:
+      - { name: 'console.command' }
+
+  bdf_queue.failer.forget_command:
+    class: 'Bdf\Queue\Console\Command\Failer\ForgetCommand'
+    arguments:
+      - '@bdf_queue.failer'
+    tags:
+      - { name: 'console.command' }
+
+  bdf_queue.failer.retry_command:
+    class: 'Bdf\Queue\Console\Command\Failer\RetryCommand'
+    arguments:
+      - '@bdf_queue.failer'
+      - '@bdf_queue.destination_manager'
+    tags:
+      - { name: 'console.command' }
+
+  bdf_queue.info_command:
+    class: 'Bdf\Queue\Console\Command\InfoCommand'
+    arguments:
+      - '@bdf_queue.connection_factory'
+    tags:
+      - { name: 'console.command' }
+
+  bdf_queue.bind_command:
+    class: 'Bdf\Queue\Console\Command\BindCommand'
+    arguments:
+      - '@bdf_queue.connection_factory'
+    tags:
+      - { name: 'console.command' }
+
+  bdf_queue.setup_command:
+    class: 'Bdf\Queue\Console\Command\SetupCommand'
+    arguments:
+      - '@bdf_queue.destination_manager'
+    tags:
+      - { name: 'console.command' }
+
+  bdf_queue.produce_command:
+    class: 'Bdf\Queue\Console\Command\ProduceCommand'
+    arguments:
+      - '@bdf_queue.destination_manager'
+    tags:
+      - { name: 'console.command' }
+
+  bdf_queue.consume_command:
+    class: 'Bdf\Queue\Console\Command\ConsumeCommand'
+    arguments:
+      - '@bdf_queue.destination_manager'
+      - '@bdf_queue.receiver.loader'
+      - '@?logger'
+    tags:
+      - { name: 'console.command' }
+      - { name: 'monolog.logger', channel: 'bdf_queue' }

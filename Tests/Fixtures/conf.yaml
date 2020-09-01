@@ -1,0 +1,25 @@
+bdf_queue:
+  default_connection: 'gearman'
+  default_serializer: 'native'
+  connections:
+    gearman:
+      url: 'gearman://127.0.0.1'
+      serializer:
+        id: 'native'
+      options:
+        client-timeout: 1
+  destinations:
+    b2p_bus:
+      url: 'queue://gearman/b2p_bus'
+      consumer:
+        handler: 'var_dump'
+        retry: 0
+        max: 2
+        limit: 100
+        memory: 128
+        save: true
+        no_failure: true
+        stop_when_empty: true
+        auto_handle: true
+        middlewares:
+          - 'bench'

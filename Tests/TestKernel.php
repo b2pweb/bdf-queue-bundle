@@ -19,4 +19,9 @@ class TestKernel extends \Symfony\Component\HttpKernel\Kernel
     {
         $loader->load(__DIR__.'/Fixtures/conf.yaml');
     }
+
+    // PHP 7.1
+    protected function configureRoutes(RouteCollectionBuilder $routes)
+    {
+    }
 }

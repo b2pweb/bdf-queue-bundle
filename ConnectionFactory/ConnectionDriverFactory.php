@@ -81,56 +81,55 @@ final class ConnectionDriverFactory implements ConnectionDriverFactoryInterface
     /**
      * Create the connection driver instance
      *
-     * @param string $driver
-     * @param array $config
+     * @param Configuration $config
      * @param SerializerInterface $serializer
      *
      * @return ConnectionDriverInterface
      */
-    public function createDriver(string $driver, array $config, SerializerInterface $serializer)
+    public function createDriver(Configuration $config, SerializerInterface $serializer)
     {
-        switch ($driver) {
+        switch ($config->getDriver()) {
             case 'null':
-                $connection = new NullConnection($config['connection']);
-                $connection->setConfig($config);
+                $connection = new NullConnection($config->getConnection());
+                $connection->setConfig($config->toArray());
                 return $connection;
 
             case 'memory':
-                $connection = new MemoryConnection($config['connection'], $serializer);
-                $connection->setConfig($config);
+                $connection = new MemoryConnection($config->getConnection(), $serializer);
+                $connection->setConfig($config->toArray());
                 return $connection;
 
             case 'gearman':
-                $connection = new GearmanConnection($config['connection'], $serializer);
-                $connection->setConfig($config);
+                $connection = new GearmanConnection($config->getConnection(), $serializer);
+                $connection->setConfig($config->toArray());
                 return $connection;
 
             case 'amqp-lib':
                 $connection = new AmqpLibConnection(
-                    $config['connection'],
+                    $config->getConnection(),
                     $serializer,
-                    isset($config['exchange_resolver']) ? $this->container->get($config['exchange_resolver']) : null
+                    $config->has('exchange_resolver') ? $this->container->get($config->get('exchange_resolver')) : null
                 );
-                $connection->setConfig($config);
+                $connection->setConfig($config->toArray());
                 return $connection;
 
             case 'pheanstalk':
-                $connection = new PheanstalkConnection($config['connection'], $serializer);
-                $connection->setConfig($config);
+                $connection = new PheanstalkConnection($config->getConnection(), $serializer);
+                $connection->setConfig($config->toArray());
                 return $connection;
 
             case 'rdkafka':
-                $connection = new RdKafkaConnection($config['connection'], $serializer);
-                $connection->setConfig($config);
+                $connection = new RdKafkaConnection($config->getConnection(), $serializer);
+                $connection->setConfig($config->toArray());
                 return $connection;
 
             case 'redis':
-                $connection = new RedisConnection($config['connection'], $serializer);
-                $connection->setConfig($config);
+                $connection = new RedisConnection($config->getConnection(), $serializer);
+                $connection->setConfig($config->toArray());
                 return $connection;
 
         }
 
-        throw new InvalidArgumentException('The queue driver "'.$driver.'" does not exist. Did you forget to add "connection_factory" option ?');
+        throw new InvalidArgumentException('The queue driver "'.$config->getDriver().'" does not exist. Did you forget to add "connection_factory" option ?');
     }
 }

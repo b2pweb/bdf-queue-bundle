@@ -63,12 +63,17 @@ class BdfQueueBundleTest extends TestCase
 
         $this->assertEquals([
             'gearman' => [
-                'driver' => 'gearman',
-                'host' => '127.0.0.1',
+                'driver' => null,
+                'host' => null,
                 'serializer' => ['id' => 'native'],
-                'queue' => 'gearman',
-                'connection' => 'gearman',
-                'client_timeout' => 1,
+                'queue' => null,
+                'url' => 'gearman://127.0.0.1',
+                'options' => ['client_timeout' => 1],
+                'vendor' => null,
+                'port' => null,
+                'user' => null,
+                'password' => null,
+                'connection_factory' => null,
             ]
         ], $configs);
     }

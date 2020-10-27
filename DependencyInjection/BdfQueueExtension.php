@@ -3,8 +3,8 @@
 namespace Bdf\QueueBundle\DependencyInjection;
 
 use Bdf\QueueBundle\ConnectionFactory\ConnectionDriverFactory;
+use Bdf\QueueBundle\ConnectionFactory\Configuration as DriverConfiguration;
 use Bdf\Queue\Connection\ConnectionDriverInterface;
-use Bdf\Queue\Connection\Factory\ResolverConnectionDriverFactory;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Compiler\PriorityTaggedServiceTrait;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -40,36 +40,20 @@ class BdfQueueExtension extends Extension
      */
     public function configureConnections(array $config, ContainerBuilder $container): void
     {
-        // pre format driver options
-        $preparedConfigs = [];
-        foreach ($config['connections'] as $name => $options) {
-            if (isset($options['url'])) {
-                $preparedConfigs[$name] = ResolverConnectionDriverFactory::parseDsn($options['url']);
-            }
-
-            if (!empty($options['options'])) {
-                $options = array_merge($options, $options['options']);
-            }
-
-            unset($options['url'], $options['options'], $options['connection_factory']);
-
-            $preparedConfigs[$name] = array_merge($preparedConfigs[$name], array_filter($options));
-        }
-
-        // create connection definition
         $connectionConfigs = [];
-        $factory = new ResolverConnectionDriverFactory($preparedConfigs, $config['default_connection']);
 
         foreach ($config['connections'] as $name => $options) {
-            $connectionConfig = $factory->getConfig($name);
-            $connectionConfigs[$name] = $connectionConfig;
+            $connectionConfigs[$name] = $options;
+
+            $container->register('bdf_queue.config_definition.'.$name, DriverConfiguration::class)
+                ->setFactory([DriverConfiguration::class, 'createConfiguration'])
+                ->setArguments([$name, $options]);
 
             $container->register('bdf_queue.connection_definition.'.$name, ConnectionDriverInterface::class)
                 ->setPublic(true)
                 ->setFactory($options['connection_factory'] ?? [new Reference(ConnectionDriverFactory::class), 'createDriver'])
                 ->setArguments([
-                    $connectionConfig['driver'],
-                    $connectionConfig,
+                    new Reference('bdf_queue.config_definition.'.$name),
                     new Reference($this->configureSerializer($options['serializer'], $config['default_serializer']))
                 ]);
         }

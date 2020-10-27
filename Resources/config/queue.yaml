@@ -39,6 +39,9 @@ services:
       - '%bdf_queue.default_connection%'
       - '%bdf_queue.connection_definition_id%'
 
+  Bdf\QueueBundle\ConnectionFactory\Configuration:
+    class: 'Bdf\QueueBundle\ConnectionFactory\Configuration'
+
 
   #Serializer
   bdf_queue.serializer.native:

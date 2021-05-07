@@ -6,7 +6,6 @@ use Bdf\QueueBundle\ConnectionFactory\ConnectionDriverFactory;
 use Bdf\QueueBundle\ConnectionFactory\Configuration as DriverConfiguration;
 use Bdf\Queue\Connection\ConnectionDriverInterface;
 use Symfony\Component\Config\FileLocator;
-use Symfony\Component\DependencyInjection\Compiler\PriorityTaggedServiceTrait;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
@@ -17,8 +16,6 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 class BdfQueueExtension extends Extension
 {
-    use PriorityTaggedServiceTrait;
-
     /**
      * {@inheritDoc}
      */

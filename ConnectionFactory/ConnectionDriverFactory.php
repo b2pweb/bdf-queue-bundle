@@ -4,6 +4,7 @@ namespace Bdf\QueueBundle\ConnectionFactory;
 
 use Bdf\Queue\Connection\AmqpLib\AmqpLibConnection;
 use Bdf\Queue\Connection\ConnectionDriverInterface;
+use Bdf\Queue\Connection\Doctrine\DoctrineConnection;
 use Bdf\Queue\Connection\Factory\ConnectionDriverFactoryInterface;
 use Bdf\Queue\Connection\Gearman\GearmanConnection;
 use Bdf\Queue\Connection\Memory\MemoryConnection;
@@ -125,6 +126,11 @@ final class ConnectionDriverFactory implements ConnectionDriverFactoryInterface
 
             case 'redis':
                 $connection = new RedisConnection($config->getConnection(), $serializer);
+                $connection->setConfig($config->toArray());
+                return $connection;
+
+            case 'doctrine':
+                $connection = new DoctrineConnection($config->getConnection(), $serializer);
                 $connection->setConfig($config->toArray());
                 return $connection;
 

@@ -69,6 +69,8 @@ class ReceiverLoader implements ReceiverLoaderInterface
      */
     private function configure(ReceiverBuilder $builder, array $config)
     {
+        $builder->log();
+
         if ($config['middlewares'] ?? false) {
             foreach ($config['middlewares'] as $middleware => $parameters) {
                 if (is_int($middleware)) {

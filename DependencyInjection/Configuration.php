@@ -61,7 +61,7 @@ class Configuration implements ConfigurationInterface
             ->end()
             ->children()
                 ->scalarNode('url')
-                    ->info('A URL with connection information; any parameter value parsed from this string will override explicitly set parameters. Format: {driver}+{vendor}://{user}:{password}@{host}:{port}/queue?option[key]=option[value]')
+                    ->info('A URL with connection information; any parameter value parsed from this string will override explicitly set parameters. Format: {driver}+{vendor}://{user}:{password}@{host}:{port}/{queue}?{option}=value')
                     ->defaultNull()
                 ->end()
                 ->scalarNode('driver')->defaultNull()->end()

@@ -4,10 +4,21 @@ namespace Bdf\QueueBundle\Tests;
 
 require_once __DIR__.'/TestKernel.php';
 
+use Bdf\Queue\Console\Command\BindCommand;
+use Bdf\Queue\Console\Command\ConsumeCommand;
+use Bdf\Queue\Console\Command\Failer\DeleteCommand;
+use Bdf\Queue\Console\Command\Failer\FlushCommand;
+use Bdf\Queue\Console\Command\Failer\ForgetCommand;
+use Bdf\Queue\Console\Command\Failer\RetryCommand;
+use Bdf\Queue\Console\Command\Failer\ShowCommand;
+use Bdf\Queue\Console\Command\InfoCommand;
+use Bdf\Queue\Console\Command\ProduceCommand;
+use Bdf\Queue\Console\Command\SetupCommand;
 use Bdf\Queue\Destination\DestinationInterface;
 use Bdf\Queue\Destination\DestinationManager;
 use Bdf\QueueBundle\BdfQueueBundle;
 use PHPUnit\Framework\TestCase;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
@@ -91,5 +102,27 @@ class BdfQueueBundleTest extends TestCase
         $this->assertEquals([
             'b2p_bus' => 'queue://gearman/b2p_bus'
         ], $configs);
+    }
+
+    /**
+     *
+     */
+    public function test_commands()
+    {
+        $kernel = new \TestKernel('dev', true);
+        $kernel->boot();
+        $console = new Application($kernel);
+
+        $this->assertInstanceOf(BindCommand::class, $console->get('queue:bind'));
+        $this->assertInstanceOf(ConsumeCommand::class, $console->get('queue:consume'));
+        $this->assertInstanceOf(InfoCommand::class, $console->get('queue:info'));
+        $this->assertInstanceOf(ProduceCommand::class, $console->get('queue:produce'));
+        $this->assertInstanceOf(SetupCommand::class, $console->get('queue:setup'));
+
+        $this->assertInstanceOf(DeleteCommand::class, $console->get('queue:failer:delete'));
+        $this->assertInstanceOf(RetryCommand::class, $console->get('queue:failer:retry'));
+        $this->assertInstanceOf(ShowCommand::class, $console->get('queue:failer:show'));
+        $this->assertInstanceOf(FlushCommand::class, $console->get('queue:failer:flush'));
+        $this->assertInstanceOf(ForgetCommand::class, $console->get('queue:failer:forget'));
     }
 }

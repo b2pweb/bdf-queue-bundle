@@ -65,7 +65,7 @@ jobs:
         run: composer install --prefer-dist --no-progress
 
       - name: Install prime adapter
-        run: composer install req --dev b2pweb/bdf-queue-prime-adapter
+        run: composer require --dev b2pweb/bdf-queue-prime-adapter
 
       - name: Run test suite
         run: composer run-script tests

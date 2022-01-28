@@ -17,6 +17,7 @@ build:
 
       tests:
         override:
+          - command: composer require --dev b2pweb/bdf-queue-prime-adapter
           - command: composer run tests-with-coverage
             coverage:
               file: coverage.xml

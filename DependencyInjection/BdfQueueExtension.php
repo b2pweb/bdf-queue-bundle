@@ -2,9 +2,12 @@
 
 namespace Bdf\QueueBundle\DependencyInjection;
 
-use Bdf\QueueBundle\ConnectionFactory\ConnectionDriverFactory;
-use Bdf\QueueBundle\ConnectionFactory\Configuration as DriverConfiguration;
 use Bdf\Queue\Connection\ConnectionDriverInterface;
+use Bdf\Queue\Failer\DbFailedJobStorage;
+use Bdf\QueueBundle\ConnectionFactory\Configuration as DriverConfiguration;
+use Bdf\QueueBundle\ConnectionFactory\ConnectionDriverFactory;
+use Bdf\QueueBundle\FailerFactory\FailerFactory;
+use Bdf\QueueBundle\FailerFactory\PrimeFailerFactory;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -29,6 +32,8 @@ class BdfQueueExtension extends Extension
 
         $this->configureConnections($config, $container);
         $this->configureDestinations($config, $container);
+
+        $container->setParameter('bdf_queue.failer_dsn', $config['failer']);
     }
 
     /**
@@ -102,6 +107,25 @@ class BdfQueueExtension extends Extension
             ->replaceArgument(1, $consumptionConfig);
 
         $container->setParameter('bdf_queue.destinations', $destinations);
+    }
+
+    /**
+     * @param array $config
+     * @param ContainerBuilder $container
+     */
+    public function configureFailer(array $config, ContainerBuilder $container): void
+    {
+        if (PrimeFailerFactory::supported()) {
+            $container->register(PrimeFailerFactory::class)
+                ->setClass(PrimeFailerFactory::class)
+                ->setArguments([new Reference('prime')])
+            ;
+
+            $container->findDefinition(FailerFactory::class)
+                ->addMethodCall('register', [new Reference(PrimeFailerFactory::class)]);
+        }
+
+        $container->setParameter('bdf_queue.failer_dsn', $config['failer']);
     }
 
     /**

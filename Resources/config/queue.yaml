@@ -3,6 +3,7 @@ parameters:
   bdf_queue.connections: []
   bdf_queue.default_connection: ''
   bdf_queue.connection_definition_id: 'bdf_queue.connection_definition.%s'
+  bdf_queue.failer_dsn: 'memory:'
 
 services:
   # Destination
@@ -90,15 +91,21 @@ services:
   bdf_queue.failer:
     alias: 'Bdf\Queue\Failer\FailedJobRepositoryInterface'
 
+  Bdf\QueueBundle\FailerFactory\MemoryFailerFactory:
+    class: Bdf\QueueBundle\FailerFactory\MemoryFailerFactory
+
+  Bdf\QueueBundle\FailerFactory\FailerFactory:
+    class: Bdf\QueueBundle\FailerFactory\FailerFactory
+    calls:
+      - register: ['@Bdf\QueueBundle\FailerFactory\MemoryFailerFactory']
+
   Bdf\Queue\Failer\MemoryFailedJobStorage:
     class: 'Bdf\Queue\Failer\MemoryFailedJobStorage'
     deprecated: 'The "%service_id%" service is deprecated since bdf-queue 1.1, use "Bdf\Queue\Failer\FailedJobRepositoryInterface" instead'
 
   Bdf\Queue\Failer\FailedJobRepositoryInterface:
-    alias: 'Bdf\Queue\Failer\MemoryFailedJobRepository'
-
-  Bdf\Queue\Failer\MemoryFailedJobRepository:
-    class: 'Bdf\Queue\Failer\MemoryFailedJobRepository'
+    factory: ['@Bdf\QueueBundle\FailerFactory\FailerFactory', 'createFromDsn']
+    arguments: ['%bdf_queue.failer_dsn%']
 
   # Commands
   bdf_queue.failer.show_command:

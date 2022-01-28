@@ -6,6 +6,7 @@ require_once __DIR__.'/TestKernel.php';
 
 use Bdf\Queue\Console\Command\BindCommand;
 use Bdf\Queue\Console\Command\ConsumeCommand;
+use Bdf\Queue\Console\Command\Failer\AbstractFailerCommand;
 use Bdf\Queue\Console\Command\Failer\DeleteCommand;
 use Bdf\Queue\Console\Command\Failer\FlushCommand;
 use Bdf\Queue\Console\Command\Failer\ForgetCommand;
@@ -16,6 +17,11 @@ use Bdf\Queue\Console\Command\ProduceCommand;
 use Bdf\Queue\Console\Command\SetupCommand;
 use Bdf\Queue\Destination\DestinationInterface;
 use Bdf\Queue\Destination\DestinationManager;
+use Bdf\Queue\Failer\DbFailedJobRepository;
+use Bdf\Queue\Failer\DbFailedJobStorage;
+use Bdf\Queue\Failer\FailedJobRepositoryAdapter;
+use Bdf\Queue\Failer\FailedJobStorageInterface;
+use Bdf\Queue\Failer\MemoryFailedJobRepository;
 use Bdf\QueueBundle\BdfQueueBundle;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
@@ -40,7 +46,7 @@ class BdfQueueBundleTest extends TestCase
      */
     public function test_kernel()
     {
-        $kernel = new \TestKernel('dev', true);
+        $kernel = new \TestKernel();
         $kernel->boot();
 
         $this->assertInstanceOf(DestinationManager::class, $kernel->getContainer()->get('bdf_queue.destination_manager'));
@@ -52,7 +58,7 @@ class BdfQueueBundleTest extends TestCase
      */
     public function test_functional()
     {
-        $kernel = new \TestKernel('dev', true);
+        $kernel = new \TestKernel();
         $kernel->boot();
 
         /** @var DestinationManager $destinations */
@@ -67,7 +73,7 @@ class BdfQueueBundleTest extends TestCase
      */
     public function test_connection_options()
     {
-        $kernel = new \TestKernel('dev', true);
+        $kernel = new \TestKernel();
         $kernel->boot();
 
         $configs = $kernel->getContainer()->getParameter('bdf_queue.connections');
@@ -94,7 +100,7 @@ class BdfQueueBundleTest extends TestCase
      */
     public function test_destination_options()
     {
-        $kernel = new \TestKernel('dev', true);
+        $kernel = new \TestKernel();
         $kernel->boot();
 
         $configs = $kernel->getContainer()->getParameter('bdf_queue.destinations');
@@ -109,7 +115,7 @@ class BdfQueueBundleTest extends TestCase
      */
     public function test_commands()
     {
-        $kernel = new \TestKernel('dev', true);
+        $kernel = new \TestKernel();
         $kernel->boot();
         $console = new Application($kernel);
 
@@ -124,5 +130,25 @@ class BdfQueueBundleTest extends TestCase
         $this->assertInstanceOf(ShowCommand::class, $console->get('queue:failer:show'));
         $this->assertInstanceOf(FlushCommand::class, $console->get('queue:failer:flush'));
         $this->assertInstanceOf(ForgetCommand::class, $console->get('queue:failer:forget'));
+    }
+
+    /**
+     * @return void
+     */
+    public function test_failer()
+    {
+        $kernel = new \TestKernel();
+        $kernel->boot();
+        $console = new Application($kernel);
+
+        $command = $console->get('queue:failer:delete');
+
+        $r = new \ReflectionProperty(AbstractFailerCommand::class, 'repository');
+        $r->setAccessible(true);
+
+        /** @var FailedJobStorageInterface $failer */
+        $failer = $r->getValue($command);
+
+        $this->assertInstanceOf(MemoryFailedJobRepository::class, $failer);
     }
 }

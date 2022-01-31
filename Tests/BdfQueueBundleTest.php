@@ -151,4 +151,25 @@ class BdfQueueBundleTest extends TestCase
 
         $this->assertInstanceOf(MemoryFailedJobRepository::class, $failer);
     }
+
+    /**
+     * @return void
+     */
+    public function test_custom_failer()
+    {
+        $kernel = new \TestKernel(__DIR__ . '/Fixtures/conf_with_custom_failer.yaml');
+        $kernel->boot();
+        $console = new Application($kernel);
+
+        $command = $console->get('queue:failer:delete');
+
+        $r = new \ReflectionProperty(AbstractFailerCommand::class, 'repository');
+        $r->setAccessible(true);
+
+        /** @var FailedJobStorageInterface $failer */
+        $failer = $r->getValue($command);
+
+        $this->assertInstanceOf(MemoryFailedJobRepository::class, $failer);
+        $this->assertSame($failer, $kernel->getContainer()->get('foo'));
+    }
 }

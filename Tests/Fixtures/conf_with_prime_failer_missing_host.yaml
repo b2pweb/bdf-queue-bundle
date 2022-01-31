@@ -1,7 +1,7 @@
 bdf_queue:
   default_connection: 'gearman'
   default_serializer: 'native'
-  failer: 'prime://my_connection/failed_jobs?maxRows=15'
+  failer: 'prime:'
   connections:
     gearman:
       url: 'gearman://127.0.0.1'

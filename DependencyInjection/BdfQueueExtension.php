@@ -6,6 +6,8 @@ use Bdf\Queue\Connection\ConnectionDriverInterface;
 use Bdf\Queue\Failer\DbFailedJobStorage;
 use Bdf\QueueBundle\ConnectionFactory\Configuration as DriverConfiguration;
 use Bdf\QueueBundle\ConnectionFactory\ConnectionDriverFactory;
+use Bdf\QueueBundle\DependencyInjection\Failer\RegisterFailerDriverPass;
+use Bdf\QueueBundle\DependencyInjection\Failer\FailerDriverConfiguratorInterface;
 use Bdf\QueueBundle\FailerFactory\FailerFactory;
 use Bdf\QueueBundle\FailerFactory\PrimeFailerFactory;
 use Symfony\Component\Config\FileLocator;
@@ -32,8 +34,7 @@ class BdfQueueExtension extends Extension
 
         $this->configureConnections($config, $container);
         $this->configureDestinations($config, $container);
-
-        $container->setParameter('bdf_queue.failer_dsn', $config['failer']);
+        $this->configureFailer($config, $container);
     }
 
     /**
@@ -115,17 +116,13 @@ class BdfQueueExtension extends Extension
      */
     public function configureFailer(array $config, ContainerBuilder $container): void
     {
-        if (PrimeFailerFactory::supported()) {
-            $container->register(PrimeFailerFactory::class)
-                ->setClass(PrimeFailerFactory::class)
-                ->setArguments([new Reference('prime')])
-            ;
-
-            $container->findDefinition(FailerFactory::class)
-                ->addMethodCall('register', [new Reference(PrimeFailerFactory::class)]);
-        }
-
         $container->setParameter('bdf_queue.failer_dsn', $config['failer']);
+
+        $container->registerForAutoconfiguration(FailerDriverConfiguratorInterface::class)
+            ->setShared(false)
+            ->setPublic(false)
+            ->addTag(RegisterFailerDriverPass::CONFIGURATOR_TAG_NAME)
+        ;
     }
 
     /**

@@ -91,21 +91,21 @@ services:
   bdf_queue.failer:
     alias: 'Bdf\Queue\Failer\FailedJobRepositoryInterface'
 
-  Bdf\QueueBundle\FailerFactory\MemoryFailerFactory:
-    class: Bdf\QueueBundle\FailerFactory\MemoryFailerFactory
-
-  Bdf\QueueBundle\FailerFactory\FailerFactory:
-    class: Bdf\QueueBundle\FailerFactory\FailerFactory
-    calls:
-      - register: ['@Bdf\QueueBundle\FailerFactory\MemoryFailerFactory']
-
   Bdf\Queue\Failer\MemoryFailedJobStorage:
     class: 'Bdf\Queue\Failer\MemoryFailedJobStorage'
     deprecated: 'The "%service_id%" service is deprecated since bdf-queue 1.1, use "Bdf\Queue\Failer\FailedJobRepositoryInterface" instead'
 
   Bdf\Queue\Failer\FailedJobRepositoryInterface:
-    factory: ['@Bdf\QueueBundle\FailerFactory\FailerFactory', 'createFromDsn']
-    arguments: ['%bdf_queue.failer_dsn%']
+    alias: 'Bdf\Queue\Failer\MemoryFailedJobRepository'
+
+  Bdf\Queue\Failer\MemoryFailedJobRepository:
+    class: 'Bdf\Queue\Failer\MemoryFailedJobRepository'
+
+  Bdf\QueueBundle\DependencyInjection\Failer\MemoryFailerDriverConfigurator:
+    tags: ['bdf_queue.failer.driver_configurator']
+
+  Bdf\QueueBundle\DependencyInjection\Failer\PrimeFailerDriverConfigurator:
+    tags: ['bdf_queue.failer.driver_configurator']
 
   # Commands
   bdf_queue.failer.show_command:

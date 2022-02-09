@@ -17,7 +17,7 @@ class TestKernel extends \Symfony\Component\HttpKernel\Kernel
         $this->config = $config;
     }
 
-    public function registerBundles()
+    public function registerBundles(): iterable
     {
         return [
             new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),

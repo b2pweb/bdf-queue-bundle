@@ -43,7 +43,7 @@ class WithPrimeTest extends TestCase
 
         if (class_exists(DbFailedJobRepository::class)) {
             $this->assertInstanceOf(DbFailedJobRepository::class, $failer);
-            $this->assertEquals(DbFailedJobRepository::make($kernel->getContainer()->get('prime'), ['connection' => 'my_connection', 'table' => 'failed_jobs'], 15));
+            $this->assertEquals(DbFailedJobRepository::make($kernel->getContainer()->get('prime'), ['connection' => 'my_connection', 'table' => 'failed_jobs'], 15), $failer);
         } else {
             $this->assertInstanceOf(FailedJobRepositoryAdapter::class, $failer);
             $this->assertEquals(

@@ -1,6 +1,12 @@
+services:
+  Bdf\QueueBundle\Tests\Fixtures\MyCustomFailerConfigurator:
+    class: Bdf\QueueBundle\Tests\Fixtures\MyCustomFailerConfigurator
+    tags: ['bdf_queue.failer.driver_configurator']
+
 bdf_queue:
   default_connection: 'gearman'
   default_serializer: 'native'
+  failer: 'custom:'
   connections:
     gearman:
       url: 'gearman://127.0.0.1'

@@ -3,6 +3,7 @@ parameters:
   bdf_queue.connections: []
   bdf_queue.default_connection: ''
   bdf_queue.connection_definition_id: 'bdf_queue.connection_definition.%s'
+  bdf_queue.failer_dsn: 'memory:'
 
 services:
   # Destination
@@ -99,6 +100,12 @@ services:
 
   Bdf\Queue\Failer\MemoryFailedJobRepository:
     class: 'Bdf\Queue\Failer\MemoryFailedJobRepository'
+
+  Bdf\QueueBundle\DependencyInjection\Failer\MemoryFailerDriverConfigurator:
+    tags: ['bdf_queue.failer.driver_configurator']
+
+  Bdf\QueueBundle\DependencyInjection\Failer\PrimeFailerDriverConfigurator:
+    tags: ['bdf_queue.failer.driver_configurator']
 
   # Commands
   bdf_queue.failer.show_command:

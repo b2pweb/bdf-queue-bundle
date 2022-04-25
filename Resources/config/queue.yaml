@@ -1,6 +1,7 @@
 parameters:
   bdf_queue.destinations: []
   bdf_queue.connections: []
+  bdf_queue.connection_names: []
   bdf_queue.default_connection: ''
   bdf_queue.connection_definition_id: 'bdf_queue.connection_definition.%s'
   bdf_queue.failer_dsn: 'memory:'
@@ -38,6 +39,7 @@ services:
     arguments:
       - '@service_container'
       - '%bdf_queue.default_connection%'
+      - '%bdf_queue.connection_names%'
       - '%bdf_queue.connection_definition_id%'
 
   Bdf\QueueBundle\ConnectionFactory\Configuration:

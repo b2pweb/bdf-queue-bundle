@@ -63,6 +63,7 @@ class BdfQueueExtension extends Extension
 
         $container->setParameter('bdf_queue.default_connection', $config['default_connection'] ?? key($connectionConfigs));
         $container->setParameter('bdf_queue.connections', $connectionConfigs);
+        $container->setParameter('bdf_queue.connection_names', array_keys($connectionConfigs));
     }
 
     /**

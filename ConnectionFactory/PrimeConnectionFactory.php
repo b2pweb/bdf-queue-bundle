@@ -41,6 +41,10 @@ class PrimeConnectionFactory implements ConnectionDriverConfiguratorInterface
      */
     public function configure(Configuration $config, SerializerInterface $serializer): ConnectionDriverInterface
     {
+        if (!class_exists(PrimeConnection::class)) {
+            throw new \LogicException('Could not create the prime connection bdf-queue. Try to composer require "b2pweb/bdf-queue-prime-adapter" to add this class.');
+        }
+
         $connection = new PrimeConnection($config->getConnection(), $serializer, $this->container->get('prime')->connections());
         $connection->setConfig($config->toArray());
 

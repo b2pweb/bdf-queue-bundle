@@ -44,7 +44,7 @@ final class ConnectionDriverFactory implements ConnectionDriverFactoryInterface
     /**
      * @var ConnectionDriverConfiguratorInterface[]
      */
-    private $configurators;
+    private $configurators = [];
 
 
     /**
@@ -102,7 +102,6 @@ final class ConnectionDriverFactory implements ConnectionDriverFactoryInterface
     /**
      * Register a custom configurator
      *
-     * @param string $name  The name of the driver
      * @param ConnectionDriverConfiguratorInterface $configurator
      */
     public function registerConfigurator(ConnectionDriverConfiguratorInterface $configurator): void

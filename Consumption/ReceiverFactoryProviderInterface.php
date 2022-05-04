@@ -6,7 +6,8 @@ use Bdf\Queue\Consumer\Receiver\Builder\ReceiverFactory;
 use Bdf\Queue\Consumer\ReceiverInterface;
 
 /**
- * Sub factory of connection driver. Create your own factory with this interface to create your own connection driver.
+ * Provides a factory to create your own receiver.
+ * This interface is auto configured. The factory will be added to the ReceiverFactory.
  */
 interface ReceiverFactoryProviderInterface
 {

@@ -119,3 +119,33 @@ bdf_queue:
         #middlewares:
         #  - 'bench'
 ```
+
+
+5 Create your receiver in consumption
+-------------------------------------
+
+If the parameter `autoconfigure` is activated you can implement the interface `Bdf\QueueBundle\Consumption\ReceiverFactoryProviderInterface`
+to have your receiver factory auto registered. Otherwise use the tag `bdf_queue.receiver_factory`.
+
+ex:
+```yaml
+services:
+  FooReceiverFactory:
+    class: 'FooReceiverFactory'
+    tags: ['bdf_queue.receiver_factory']
+```
+
+
+6 Create your connection
+------------------------
+
+If the parameter `autoconfigure` is activated you can implement the interface `Bdf\QueueBundle\ConnectionFactory\ConnectionDriverConfiguratorInterface`
+to have your connection factory auto registered. Otherwise use the tag `bdf_queue.driver_configurator`.
+
+ex:
+```yaml
+services:
+  FooConnectionFactory:
+    class: 'FooConnectionFactory'
+    tags: ['bdf_queue.driver_configurator']
+```

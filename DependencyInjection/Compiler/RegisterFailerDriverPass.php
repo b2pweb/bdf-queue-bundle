@@ -1,6 +1,6 @@
 <?php
 
-namespace Bdf\QueueBundle\DependencyInjection\Failer;
+namespace Bdf\QueueBundle\DependencyInjection\Compiler;
 
 use Bdf\Dsn\Dsn;
 use Bdf\Queue\Failer\DbFailedJobRepository;

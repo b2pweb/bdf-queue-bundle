@@ -1,7 +1,17 @@
+
+services:
+  Bdf\QueueBundle\Tests\Fixtures\FooReceiverFactory:
+    class: 'Bdf\QueueBundle\Tests\Fixtures\FooReceiverFactory'
+    tags: ['bdf_queue.receiver_factory']
+
+  Bdf\QueueBundle\Tests\Fixtures\ReceiverFactoryWrapper:
+    public: true
+    class: 'Bdf\QueueBundle\Tests\Fixtures\ReceiverFactoryWrapper'
+    arguments: ['@bdf_queue.receiver.factory']
+
 bdf_queue:
   default_connection: 'gearman'
   default_serializer: 'native'
-  failer: 'prime:'
   connections:
     gearman:
       url: 'gearman://127.0.0.1'
@@ -27,7 +37,6 @@ bdf_queue:
 
 prime:
   default_connection: 'my_connection'
-  logging: false
   connections:
     my_connection: 'sqlite::memory:'
 

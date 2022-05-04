@@ -41,6 +41,11 @@ final class ConnectionDriverFactory implements ConnectionDriverFactoryInterface
      */
     private $connectionNames;
 
+    /**
+     * @var ConnectionDriverConfiguratorInterface[]
+     */
+    private $configurators;
+
 
     /**
      * @param ContainerInterface $container
@@ -95,14 +100,48 @@ final class ConnectionDriverFactory implements ConnectionDriverFactoryInterface
     }
 
     /**
+     * Register a custom configurator
+     *
+     * @param string $name  The name of the driver
+     * @param ConnectionDriverConfiguratorInterface $configurator
+     */
+    public function registerConfigurator(ConnectionDriverConfiguratorInterface $configurator): void
+    {
+        foreach ($configurator->getSupportedDrivers() as $driver) {
+            $this->configurators[$driver] = $configurator;
+        }
+    }
+
+    /**
      * Create the connection driver instance
      *
      * @param Configuration $config
      * @param SerializerInterface $serializer
      *
      * @return ConnectionDriverInterface
+     *
+     * @internal
      */
     public function createDriver(Configuration $config, SerializerInterface $serializer)
+    {
+        if (isset($this->configurators[$config->getDriver()])) {
+            return $this->configurators[$config->getDriver()]->configure($config, $serializer);
+        }
+
+        return $this->configureKnownDriver($config, $serializer);
+    }
+
+    /**
+     * Create the known driver instance
+     *
+     * @param Configuration $config
+     * @param SerializerInterface $serializer
+     *
+     * @return ConnectionDriverInterface
+     *
+     * @internal
+     */
+    private function configureKnownDriver(Configuration $config, SerializerInterface $serializer)
     {
         switch ($config->getDriver()) {
             case 'null':
@@ -148,7 +187,6 @@ final class ConnectionDriverFactory implements ConnectionDriverFactoryInterface
                 $connection = new DoctrineConnection($config->getConnection(), $serializer);
                 $connection->setConfig($config->toArray());
                 return $connection;
-
         }
 
         throw new InvalidArgumentException('The queue driver "'.$config->getDriver().'" does not exist. Did you forget to add "connection_factory" option ?');

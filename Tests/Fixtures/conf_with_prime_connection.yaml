@@ -1,0 +1,20 @@
+bdf_queue:
+  default_connection: 'gearman'
+  default_serializer: 'native'
+  connections:
+    prime:
+      url: 'prime://my_connection?table=queue'
+      serializer:
+        id: 'native'
+      options:
+        client-timeout: 1
+
+prime:
+  default_connection: 'my_connection'
+  logging: false
+  connections:
+    my_connection: 'sqlite::memory:'
+
+  migration:
+    connection: 'my_connection'
+    path: '%kernel.project_dir%/src/Migration'

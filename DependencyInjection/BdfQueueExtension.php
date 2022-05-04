@@ -3,13 +3,14 @@
 namespace Bdf\QueueBundle\DependencyInjection;
 
 use Bdf\Queue\Connection\ConnectionDriverInterface;
-use Bdf\Queue\Failer\DbFailedJobStorage;
 use Bdf\QueueBundle\ConnectionFactory\Configuration as DriverConfiguration;
+use Bdf\QueueBundle\ConnectionFactory\ConnectionDriverConfiguratorInterface;
 use Bdf\QueueBundle\ConnectionFactory\ConnectionDriverFactory;
-use Bdf\QueueBundle\DependencyInjection\Failer\RegisterFailerDriverPass;
+use Bdf\QueueBundle\Consumption\ReceiverFactoryProviderInterface;
+use Bdf\QueueBundle\DependencyInjection\Compiler\DriverFactoryPass;
+use Bdf\QueueBundle\DependencyInjection\Compiler\RegisterFailerDriverPass;
+use Bdf\QueueBundle\DependencyInjection\Compiler\RegisterReceiverFactoryPass;
 use Bdf\QueueBundle\DependencyInjection\Failer\FailerDriverConfiguratorInterface;
-use Bdf\QueueBundle\FailerFactory\FailerFactory;
-use Bdf\QueueBundle\FailerFactory\PrimeFailerFactory;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -61,6 +62,11 @@ class BdfQueueExtension extends Extension
                 ]);
         }
 
+        $container->registerForAutoconfiguration(ConnectionDriverConfiguratorInterface::class)
+            ->setShared(false)
+            ->setPublic(false)
+            ->addTag(DriverFactoryPass::CONFIGURATOR_TAG_NAME);
+
         $container->setParameter('bdf_queue.default_connection', $config['default_connection'] ?? key($connectionConfigs));
         $container->setParameter('bdf_queue.connections', $connectionConfigs);
         $container->setParameter('bdf_queue.connection_names', array_keys($connectionConfigs));
@@ -104,6 +110,11 @@ class BdfQueueExtension extends Extension
                 }
             }
         }
+
+        $container->registerForAutoconfiguration(ReceiverFactoryProviderInterface::class)
+            ->setShared(false)
+            ->setPublic(false)
+            ->addTag(RegisterReceiverFactoryPass::CONFIGURATOR_TAG_NAME);
 
         $container->getDefinition('bdf_queue.receiver.loader')
             ->replaceArgument(1, $consumptionConfig);

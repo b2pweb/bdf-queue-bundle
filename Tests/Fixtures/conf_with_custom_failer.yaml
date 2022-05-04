@@ -32,8 +32,9 @@ bdf_queue:
 
 prime:
   default_connection: 'my_connection'
+  logging: false
   connections:
-    my_connection: 'sqlite:memory:'
+    my_connection: 'sqlite::memory:'
 
   migration:
     connection: 'my_connection'

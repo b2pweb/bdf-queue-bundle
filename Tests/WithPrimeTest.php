@@ -3,6 +3,7 @@ namespace Bdf\QueueBundle\Tests;
 
 require_once __DIR__.'/TestKernel.php';
 
+use Bdf\Prime\Connection\Result\DoctrineResultSet;
 use Bdf\Prime\ServiceLocator;
 use Bdf\Queue\Connection\Prime\PrimeConnection;
 use Bdf\Queue\Console\Command\Failer\AbstractFailerCommand;
@@ -125,11 +126,14 @@ class WithPrimeTest extends TestCase
         $destination->declare();
 
         $count = $prime->connection('my_connection')->select('select count(*) as nb from queue');
-        $this->assertEquals(0, $count[0]->nb);
+        $count = $count instanceof DoctrineResultSet ? $count->all() : $count[0];
+
+        $this->assertEquals(0, $count->nb);
 
         $destination->raw('test');
 
         $count = $prime->connection('my_connection')->select('select count(*) as nb from queue');
-        $this->assertEquals(1, $count[0]->nb);
+        $count = $count instanceof DoctrineResultSet ? $count->all() : $count[0];
+        $this->assertEquals(1, $count->nb);
     }
 }

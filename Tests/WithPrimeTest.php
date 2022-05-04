@@ -126,14 +126,14 @@ class WithPrimeTest extends TestCase
         $destination->declare();
 
         $count = $prime->connection('my_connection')->select('select count(*) as nb from queue');
-        $count = $count instanceof DoctrineResultSet ? $count->all() : $count[0];
+        $count = $count instanceof DoctrineResultSet ? $count->all()[0] : $count[0];
 
         $this->assertEquals(0, $count->nb);
 
         $destination->raw('test');
 
         $count = $prime->connection('my_connection')->select('select count(*) as nb from queue');
-        $count = $count instanceof DoctrineResultSet ? $count->all() : $count[0];
+        $count = $count instanceof DoctrineResultSet ? $count->all()[0] : $count[0];
         $this->assertEquals(1, $count->nb);
     }
 }

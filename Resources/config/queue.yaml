@@ -45,6 +45,13 @@ services:
   Bdf\QueueBundle\ConnectionFactory\Configuration:
     class: 'Bdf\QueueBundle\ConnectionFactory\Configuration'
 
+  Bdf\QueueBundle\ConnectionFactory\PrimeConnectionFactory:
+    class: 'Bdf\QueueBundle\ConnectionFactory\PrimeConnectionFactory'
+    arguments:
+      - '@service_container'
+    tags:
+      - { name: 'bdf_queue.driver_configurator' }
+
 
   #Serializer
   bdf_queue.serializer.native:

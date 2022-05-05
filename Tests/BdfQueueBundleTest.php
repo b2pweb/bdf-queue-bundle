@@ -4,6 +4,9 @@ namespace Bdf\QueueBundle\Tests;
 
 require_once __DIR__.'/TestKernel.php';
 
+use Bdf\Prime\Connection\Result\DoctrineResultSet;
+use Bdf\Prime\ServiceLocator;
+use Bdf\Queue\Connection\Prime\PrimeConnection;
 use Bdf\Queue\Console\Command\BindCommand;
 use Bdf\Queue\Console\Command\ConsumeCommand;
 use Bdf\Queue\Console\Command\Failer\AbstractFailerCommand;
@@ -17,9 +20,6 @@ use Bdf\Queue\Console\Command\ProduceCommand;
 use Bdf\Queue\Console\Command\SetupCommand;
 use Bdf\Queue\Destination\DestinationInterface;
 use Bdf\Queue\Destination\DestinationManager;
-use Bdf\Queue\Failer\DbFailedJobRepository;
-use Bdf\Queue\Failer\DbFailedJobStorage;
-use Bdf\Queue\Failer\FailedJobRepositoryAdapter;
 use Bdf\Queue\Failer\FailedJobStorageInterface;
 use Bdf\Queue\Failer\MemoryFailedJobRepository;
 use Bdf\QueueBundle\BdfQueueBundle;
@@ -171,5 +171,24 @@ class BdfQueueBundleTest extends TestCase
 
         $this->assertInstanceOf(MemoryFailedJobRepository::class, $failer);
         $this->assertSame($failer, $kernel->getContainer()->get('foo'));
+    }
+
+    /**
+     *
+     */
+    public function test_prime_connection()
+    {
+        if (class_exists(PrimeConnection::class)) {
+            $this->markTestSkipped('b2pweb/bdf-queue-prime-adapter installed');
+        }
+
+        $this->expectException(\LogicException::class);
+
+        $kernel = new \TestKernel(__DIR__ . '/Fixtures/conf_with_prime_connection.yaml');
+        $kernel->boot();
+
+        /** @var DestinationManager $destinations */
+        $destinations = $kernel->getContainer()->get('bdf_queue.destination_manager');
+        $destinations->queue('prime', 'queue_name');
     }
 }

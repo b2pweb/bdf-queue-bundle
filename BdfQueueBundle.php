@@ -2,7 +2,9 @@
 
 namespace Bdf\QueueBundle;
 
-use Bdf\QueueBundle\DependencyInjection\Failer\RegisterFailerDriverPass;
+use Bdf\QueueBundle\DependencyInjection\Compiler\DriverFactoryPass;
+use Bdf\QueueBundle\DependencyInjection\Compiler\RegisterFailerDriverPass;
+use Bdf\QueueBundle\DependencyInjection\Compiler\RegisterReceiverFactoryPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
@@ -18,6 +20,8 @@ class BdfQueueBundle extends Bundle
      */
     public function build(ContainerBuilder $container)
     {
+        $container->addCompilerPass(new DriverFactoryPass());
         $container->addCompilerPass(new RegisterFailerDriverPass());
+        $container->addCompilerPass(new RegisterReceiverFactoryPass());
     }
 }

@@ -3,9 +3,13 @@ namespace Bdf\QueueBundle\Tests;
 
 require_once __DIR__.'/TestKernel.php';
 
+use Bdf\Prime\Connection\Result\DoctrineResultSet;
+use Bdf\Prime\ServiceLocator;
 use Bdf\Queue\Connection\Prime\PrimeConnection;
 use Bdf\Queue\Console\Command\Failer\AbstractFailerCommand;
 use Bdf\Queue\Console\Command\Failer\InitCommand;
+use Bdf\Queue\Destination\DestinationInterface;
+use Bdf\Queue\Destination\DestinationManager;
 use Bdf\Queue\Failer\DbFailedJobRepository;
 use Bdf\Queue\Failer\DbFailedJobStorage;
 use Bdf\Queue\Failer\FailedJobRepositoryAdapter;
@@ -103,5 +107,33 @@ class WithPrimeTest extends TestCase
         }
 
         return false;
+    }
+
+    /**
+     *
+     */
+    public function test_prime_connection()
+    {
+        $kernel = new \TestKernel(__DIR__ . '/Fixtures/conf_with_prime_connection.yaml');
+        $kernel->boot();
+
+        /** @var ServiceLocator $prime */
+        $prime = $kernel->getContainer()->get('prime');
+
+        /** @var DestinationManager $destinations */
+        $destinations = $kernel->getContainer()->get('bdf_queue.destination_manager');
+        $destination = $destinations->queue('prime', 'queue_name');
+        $destination->declare();
+
+        $count = $prime->connection('my_connection')->select('select count(*) as nb from queue');
+        $count = $count instanceof DoctrineResultSet ? $count->all()[0] : $count[0];
+
+        $this->assertEquals(0, $count->nb);
+
+        $destination->raw('test');
+
+        $count = $prime->connection('my_connection')->select('select count(*) as nb from queue');
+        $count = $count instanceof DoctrineResultSet ? $count->all()[0] : $count[0];
+        $this->assertEquals(1, $count->nb);
     }
 }

@@ -7,6 +7,7 @@ use Bdf\QueueBundle\ConnectionFactory\Configuration as DriverConfiguration;
 use Bdf\QueueBundle\ConnectionFactory\ConnectionDriverConfiguratorInterface;
 use Bdf\QueueBundle\ConnectionFactory\ConnectionDriverFactory;
 use Bdf\QueueBundle\Consumption\ReceiverFactoryProviderInterface;
+use Bdf\QueueBundle\Consumption\ReceiverLoader;
 use Bdf\QueueBundle\DependencyInjection\Compiler\DriverFactoryPass;
 use Bdf\QueueBundle\DependencyInjection\Compiler\RegisterFailerDriverPass;
 use Bdf\QueueBundle\DependencyInjection\Compiler\RegisterReceiverFactoryPass;
@@ -116,7 +117,7 @@ class BdfQueueExtension extends Extension
             ->setPublic(false)
             ->addTag(RegisterReceiverFactoryPass::CONFIGURATOR_TAG_NAME);
 
-        $container->getDefinition('bdf_queue.receiver.loader')
+        $container->getDefinition(ReceiverLoader::class)
             ->replaceArgument(1, $consumptionConfig);
 
         $container->setParameter('bdf_queue.destinations', $destinations);

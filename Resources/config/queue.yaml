@@ -26,12 +26,21 @@ services:
     arguments: ['%bdf_queue.destinations%', '@Bdf\Queue\Destination\DsnDestinationFactory']
 
   bdf_queue.destination_factory:
+    alias: 'Bdf\Queue\Destination\DestinationFactoryInterface'
+
+  Bdf\Queue\Destination\DestinationFactoryInterface:
+    alias: 'Bdf\Queue\Destination\CachedDestinationFactory'
+
+  Bdf\Queue\Destination\CachedDestinationFactory:
     class: 'Bdf\Queue\Destination\CachedDestinationFactory'
     arguments: ['@Bdf\Queue\Destination\ConfigurationDestinationFactory']
 
 
   #Connection factory
   bdf_queue.connection_factory:
+    alias: 'Bdf\Queue\Connection\Factory\ConnectionDriverFactoryInterface'
+
+  Bdf\Queue\Connection\Factory\ConnectionDriverFactoryInterface:
     alias: 'Bdf\QueueBundle\ConnectionFactory\ConnectionDriverFactory'
 
   Bdf\QueueBundle\ConnectionFactory\ConnectionDriverFactory:
@@ -71,15 +80,24 @@ services:
 
   #Consumer
   bdf_queue.receiver.factory:
+    alias: 'Bdf\Queue\Consumer\Receiver\Builder\ReceiverFactory'
+
+  Bdf\Queue\Consumer\Receiver\Builder\ReceiverFactory:
     class: 'Bdf\Queue\Consumer\Receiver\Builder\ReceiverFactory'
     arguments: ['@service_container', '@bdf_queue.instantiator']
 
   bdf_queue.receiver.loader:
+    alias: 'Bdf\Queue\Consumer\Receiver\Builder\ReceiverLoaderInterface'
+
+  Bdf\Queue\Consumer\Receiver\Builder\ReceiverLoaderInterface:
+    alias: 'Bdf\QueueBundle\Consumption\ReceiverLoader'
+
+  Bdf\QueueBundle\Consumption\ReceiverLoader:
     class: 'Bdf\QueueBundle\Consumption\ReceiverLoader'
     arguments:
       - '@service_container'
       - []
-      - '@bdf_queue.receiver.factory'
+      - '@Bdf\Queue\Consumer\Receiver\Builder\ReceiverFactory'
 
 
   #Instantiator

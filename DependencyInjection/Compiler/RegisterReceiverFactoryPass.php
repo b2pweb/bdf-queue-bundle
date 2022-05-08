@@ -2,6 +2,7 @@
 
 namespace Bdf\QueueBundle\DependencyInjection\Compiler;
 
+use Bdf\Queue\Consumer\Receiver\Builder\ReceiverFactory;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
@@ -19,7 +20,7 @@ final class RegisterReceiverFactoryPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        $factory = $container->getDefinition('bdf_queue.receiver.factory');
+        $factory = $container->getDefinition(ReceiverFactory::class);
 
         foreach ($container->findTaggedServiceIds(self::CONFIGURATOR_TAG_NAME) as $serviceId => $tag) {
             $factory->addMethodCall('addFactory', [

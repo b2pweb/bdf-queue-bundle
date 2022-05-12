@@ -92,6 +92,9 @@ services:
   Bdf\Queue\Consumer\Receiver\Builder\ReceiverLoaderInterface:
     alias: 'Bdf\QueueBundle\Consumption\ReceiverLoader'
 
+  Bdf\Queue\Consumer\Receiver\Builder\ReceiverLoader:
+    alias: 'Bdf\QueueBundle\Consumption\ReceiverLoader'
+
   Bdf\QueueBundle\Consumption\ReceiverLoader:
     class: 'Bdf\QueueBundle\Consumption\ReceiverLoader'
     arguments:

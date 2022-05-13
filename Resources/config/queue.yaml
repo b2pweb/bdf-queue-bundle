@@ -94,6 +94,7 @@ services:
 
   Bdf\Queue\Consumer\Receiver\Builder\ReceiverLoader:
     alias: 'Bdf\QueueBundle\Consumption\ReceiverLoader'
+    public: true
 
   Bdf\QueueBundle\Consumption\ReceiverLoader:
     class: 'Bdf\QueueBundle\Consumption\ReceiverLoader'
@@ -101,7 +102,6 @@ services:
       - '@service_container'
       - []
       - '@Bdf\Queue\Consumer\Receiver\Builder\ReceiverFactory'
-
 
   #Instantiator
   bdf_queue.instantiator:

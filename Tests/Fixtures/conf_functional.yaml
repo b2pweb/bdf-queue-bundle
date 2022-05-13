@@ -1,0 +1,25 @@
+bdf_queue:
+  default_connection: 'gearman'
+  default_serializer: 'native'
+  connections:
+    memory:
+      url: 'memory:'
+  destinations:
+    test:
+      url: 'queue://memory/test'
+      consumer:
+        handler: '@Bdf\QueueBundle\Tests\Fixtures\TestHandler'
+
+prime:
+  default_connection: 'my_connection'
+  connections:
+    my_connection: 'sqlite::memory:'
+
+  migration:
+    connection: 'my_connection'
+    path: '%kernel.project_dir%/src/Migration'
+
+services:
+  Bdf\QueueBundle\Tests\Fixtures\TestHandler:
+    class: Bdf\QueueBundle\Tests\Fixtures\TestHandler
+    public: true

@@ -22,7 +22,10 @@ use Bdf\Queue\Destination\DestinationInterface;
 use Bdf\Queue\Destination\DestinationManager;
 use Bdf\Queue\Failer\FailedJobStorageInterface;
 use Bdf\Queue\Failer\MemoryFailedJobRepository;
+use Bdf\Queue\Message\Message;
+use Bdf\Queue\Testing\QueueHelper;
 use Bdf\QueueBundle\BdfQueueBundle;
+use Bdf\QueueBundle\Tests\Fixtures\TestHandler;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -58,14 +61,23 @@ class BdfQueueBundleTest extends TestCase
      */
     public function test_functional()
     {
-        $kernel = new \TestKernel();
+        $kernel = new \TestKernel(__DIR__.'/Fixtures/conf_functional.yaml');
         $kernel->boot();
 
         /** @var DestinationManager $destinations */
         $destinations = $kernel->getContainer()->get('bdf_queue.destination_manager');
-        $destination = $destinations->create('b2p_bus');
+        $destination = $destinations->create('test');
 
         $this->assertInstanceOf(DestinationInterface::class, $destination);
+
+        /** @var TestHandler $handler */
+        $handler = $kernel->getContainer()->get(TestHandler::class);
+
+        $helper = new QueueHelper($kernel->getContainer());
+        $destination->send(new Message(['foo' => 'bar']));
+
+        $helper->consume(1, 'test');
+        $this->assertEquals([['foo' => 'bar']], $handler->messages);
     }
 
     /**

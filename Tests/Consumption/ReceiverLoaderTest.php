@@ -71,27 +71,17 @@ class Container implements \Psr\Container\ContainerInterface
         $this->service = $service;
     }
 
-    /**
-     * @param string $id
-     * @param mixed $service
-     */
-    public function set($id, $service): void
+    public function set(string $id, $service): void
     {
         $this->service[$id] = $service;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function get($id)
+    public function get(string $id)
     {
         return $this->service[$id];
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function has($id)
+    public function has(string $id): bool
     {
         return isset($this->service[$id]);
     }

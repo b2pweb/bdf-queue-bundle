@@ -4,8 +4,6 @@ namespace Bdf\QueueBundle\Tests;
 
 require_once __DIR__.'/TestKernel.php';
 
-use Bdf\Prime\Connection\Result\DoctrineResultSet;
-use Bdf\Prime\ServiceLocator;
 use Bdf\Queue\Connection\Prime\PrimeConnection;
 use Bdf\Queue\Console\Command\BindCommand;
 use Bdf\Queue\Console\Command\ConsumeCommand;

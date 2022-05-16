@@ -123,7 +123,10 @@ services:
 
   Bdf\Queue\Failer\MemoryFailedJobStorage:
     class: 'Bdf\Queue\Failer\MemoryFailedJobStorage'
-    deprecated: 'The "%service_id%" service is deprecated since bdf-queue 1.1, use "Bdf\Queue\Failer\FailedJobRepositoryInterface" instead'
+    deprecated:
+      message: 'The "%service_id%" service is deprecated, use "Bdf\Queue\Failer\FailedJobRepositoryInterface" instead'
+      package: 'bdf-queue'
+      version: '1.1'
 
   Bdf\Queue\Failer\FailedJobRepositoryInterface:
     alias: 'Bdf\Queue\Failer\MemoryFailedJobRepository'
@@ -147,7 +150,10 @@ services:
 
   bdf_queue.failer.flush_command:
     class: 'Bdf\Queue\Console\Command\Failer\FlushCommand'
-    deprecated: 'The "%service_id%" service is deprecated since bdf-queue 1.1, use "Bdf\Queue\Console\Command\Failer\DeleteCommand" instead'
+    deprecated:
+      message: 'The "%service_id%" service is deprecated, use "Bdf\Queue\Console\Command\Failer\DeleteCommand" instead'
+      package: 'bdf-queue'
+      version: '1.1'
     arguments:
       - '@bdf_queue.failer'
     tags:
@@ -155,7 +161,10 @@ services:
 
   bdf_queue.failer.forget_command:
     class: 'Bdf\Queue\Console\Command\Failer\ForgetCommand'
-    deprecated: 'The "%service_id%" service is deprecated since bdf-queue 1.1, use "Bdf\Queue\Console\Command\Failer\DeleteCommand" instead'
+    deprecated:
+      message: 'The "%service_id%" service is deprecated, use "Bdf\Queue\Console\Command\Failer\DeleteCommand" instead'
+      package: 'bdf-queue'
+      version: '1.1'
     arguments:
       - '@bdf_queue.failer'
     tags:

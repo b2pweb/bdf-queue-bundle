@@ -103,6 +103,11 @@ services:
       - []
       - '@Bdf\Queue\Consumer\Receiver\Builder\ReceiverFactory'
 
+  Bdf\QueueBundle\Consumption\Receiver\ResetServicesFactory:
+    class: 'Bdf\QueueBundle\Consumption\Receiver\ResetServicesFactory'
+    tags: ['bdf_queue.receiver_factory']
+
+
   #Instantiator
   bdf_queue.instantiator:
     alias: 'Bdf\Instantiator\Instantiator'

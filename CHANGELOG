@@ -1,0 +1,4 @@
+v1.2.0
+------
+
+ * Imp: Add the reset services receiver based on `Symfony\Component\HttpKernel\DependencyInjection\ServicesResetter`.

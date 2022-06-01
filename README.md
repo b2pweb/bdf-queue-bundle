@@ -105,6 +105,9 @@ bdf_queue:
         # Store the failed messages
         #save: true
         
+        # Disable the reset of services between messages
+        #no_reset: true
+        
         # Catch all exceptions to ensure that the consumer will no crash (and will silently fail)
         #no_failure: true
         

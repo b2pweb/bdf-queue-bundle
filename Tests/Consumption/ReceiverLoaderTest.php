@@ -4,7 +4,7 @@ namespace Bdf\QueueBundle\Tests\Consumption;
 
 use Bdf\Instantiator\Instantiator;
 use Bdf\Instantiator\InstantiatorInterface;
-use Bdf\Queue\Consumer\Receiver\Builder\ReceiverBuilder;
+use Bdf\Queue\Consumer\Receiver\Builder\ReceiverFactory;
 use Bdf\Queue\Consumer\Receiver\MemoryLimiterReceiver;
 use Bdf\Queue\Consumer\Receiver\MessageCountLimiterReceiver;
 use Bdf\Queue\Consumer\Receiver\MessageLoggerReceiver;
@@ -12,37 +12,80 @@ use Bdf\Queue\Consumer\Receiver\NoFailureReceiver;
 use Bdf\Queue\Consumer\Receiver\ProcessorReceiver;
 use Bdf\Queue\Consumer\Receiver\RateLimiterReceiver;
 use Bdf\Queue\Consumer\Receiver\RetryMessageReceiver;
+use Bdf\QueueBundle\Consumption\Receiver\ResetServices;
+use Bdf\QueueBundle\Consumption\Receiver\ResetServicesFactory;
 use Bdf\QueueBundle\Consumption\ReceiverLoader;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
+use Symfony\Component\HttpKernel\DependencyInjection\ServicesResetter;
 
 /**
  *
  */
 class ReceiverLoaderTest extends TestCase
 {
-    /**
-     *
-     */
-    public function test_default_build()
+    private $container;
+
+    public function setUp(): void
     {
-        $container = $this->createMock(ContainerInterface::class);
+        parent::setUp();
 
-        $loader = new ReceiverLoader($container, []);
-        $builder = $loader->load('foo');
+        $this->container = new Container();
+        $this->container->set(InstantiatorInterface::class, new Instantiator($this->container));
+    }
 
-        $this->assertEquals(new ReceiverBuilder($container), $builder);
+    private function getLoader(array $configuration = []): ReceiverLoader
+    {
+        $resetFactory = new ResetServicesFactory();
+        $factory = new ReceiverFactory($this->container);
+        $factory->addFactory($resetFactory->getReceiverNames(), [$resetFactory, 'create']);
+
+        return new ReceiverLoader($this->container, $configuration, $factory);
     }
 
     /**
      *
      */
-    public function test_config()
+    public function test_unknown_destination_config()
     {
-        $container = new Container();
-        $container->set(InstantiatorInterface::class, new Instantiator($container));
+        $loader = $this->getLoader();
+        $builder = $loader->load('foo');
 
-        $loader = new ReceiverLoader($container, [
+        $chain = MessageLoggerReceiver::class.'->'.ProcessorReceiver::class;
+
+        $this->assertEquals($chain, (string) $builder->build());
+    }
+
+    /**
+     *
+     */
+    public function test_full_config()
+    {
+        $loader = $this->getLoader([
+            'foo' => [
+                'retry' => '1',
+                'limit' => '2',
+                'no_failure' => true,
+                'stop_when_empty' => '',
+                'max' => '1',
+                'memory' => '128',
+                'no_reset' => true,
+            ]
+        ]);
+        $builder = $loader->load('foo');
+
+        $chain = MemoryLimiterReceiver::class.'->'.MessageCountLimiterReceiver::class.'->'.NoFailureReceiver::class.'->'
+            .RateLimiterReceiver::class.'->'.RetryMessageReceiver::class.'->'.MessageLoggerReceiver::class.'->'.ProcessorReceiver::class;
+
+        $this->assertEquals($chain, (string) $builder->build());
+    }
+
+    /**
+     *
+     */
+    public function test_without_service_resetter_config()
+    {
+        $loader = $this->getLoader([
             'foo' => [
                 'retry' => '1',
                 'limit' => '2',
@@ -57,12 +100,55 @@ class ReceiverLoaderTest extends TestCase
         $chain = MemoryLimiterReceiver::class.'->'.MessageCountLimiterReceiver::class.'->'.NoFailureReceiver::class.'->'
             .RateLimiterReceiver::class.'->'.RetryMessageReceiver::class.'->'.MessageLoggerReceiver::class.'->'.ProcessorReceiver::class;
 
+        $this->assertEquals($chain, (string) $builder->build());
+    }
+
+    /**
+     *
+     */
+    public function test_default_config()
+    {
+        $this->container->set('services_resetter', $this->createMock(ServicesResetter::class));
+
+        $loader = $this->getLoader([
+            'foo' => [
+            ]
+        ]);
+        $builder = $loader->load('foo');
+
+        $chain = ResetServices::class.'->'.MessageLoggerReceiver::class.'->'.ProcessorReceiver::class;
+
+        $this->assertEquals($chain, (string)$builder->build());
+    }
+
+    /**
+     *
+     */
+    public function test_full_order_config()
+    {
+        $this->container->set('services_resetter', $this->createMock(ServicesResetter::class));
+
+        $loader = $this->getLoader([
+            'foo' => [
+                'retry' => '1',
+                'limit' => '2',
+                'no_failure' => true,
+                'stop_when_empty' => '',
+                'max' => '1',
+                'memory' => '128',
+            ]
+        ]);
+        $builder = $loader->load('foo');
+
+        $chain = ResetServices::class.'->'.MemoryLimiterReceiver::class.'->'.MessageCountLimiterReceiver::class.'->'.NoFailureReceiver::class.'->'
+            .RateLimiterReceiver::class.'->'.RetryMessageReceiver::class.'->'.MessageLoggerReceiver::class.'->'.ProcessorReceiver::class;
+
         $this->assertEquals($chain, (string)$builder->build());
     }
 }
 
 
-class Container implements \Psr\Container\ContainerInterface
+class Container implements ContainerInterface
 {
     private $service;
 

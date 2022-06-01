@@ -53,11 +53,7 @@ class ReceiverLoader implements ReceiverLoaderInterface
     {
         $builder = new ReceiverBuilder($this->container, null, $this->factory);
 
-        if (!isset($this->configuration[$name])) {
-            return $builder;
-        }
-
-        $this->configure($builder, $this->configuration[$name]);
+        $this->configure($builder, $this->configuration[$name] ?? []);
 
         return $builder;
     }
@@ -108,6 +104,10 @@ class ReceiverLoader implements ReceiverLoaderInterface
 
         if ($config['memory'] ?? false) {
             $builder->memory($this->convertToBytes($config['memory']));
+        }
+
+        if (!($config['no_reset'] ?? false) && $this->container->has('services_resetter')) {
+            $builder->add('reset', [$this->container->get('services_resetter')]);
         }
 
         if ($config['handler'] ?? false) {

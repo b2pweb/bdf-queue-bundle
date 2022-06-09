@@ -9,6 +9,9 @@ bdf_queue:
       options:
         client-timeout: 1
   destinations:
+    custom_bus:
+      url: 'queue://gearman/custom_bus'
+
     b2p_bus:
       url: 'queue://gearman/b2p_bus'
       consumer:

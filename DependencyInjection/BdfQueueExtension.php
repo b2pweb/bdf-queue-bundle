@@ -101,7 +101,7 @@ class BdfQueueExtension extends Extension
             $destinations[$name] = $options['url'];
 
             // TODO build a builder rule in the container for this destination
-            foreach ($options['consumer'] as $option => $value) {
+            foreach ($options['consumer'] ?? [] as $option => $value) {
                 if ($value !== null) {
                     if (($value[0] ?? '') === '@') {
                         $value = new Reference(ltrim($value, '@'));

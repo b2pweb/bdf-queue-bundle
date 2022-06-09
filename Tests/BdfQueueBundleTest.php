@@ -116,7 +116,8 @@ class BdfQueueBundleTest extends TestCase
         $configs = $kernel->getContainer()->getParameter('bdf_queue.destinations');
 
         $this->assertEquals([
-            'b2p_bus' => 'queue://gearman/b2p_bus'
+            'b2p_bus' => 'queue://gearman/b2p_bus',
+            'custom_bus' => 'queue://gearman/custom_bus',
         ], $configs);
     }
 

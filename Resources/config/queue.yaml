@@ -70,6 +70,9 @@ services:
     class: 'Bdf\Queue\Serializer\BdfSerializer'
     arguments: ['@?bdf_serializer']
 
+  bdf_queue.serializer.json:
+    class: 'Bdf\Queue\Serializer\JsonSerializer'
+
   bdf_queue.serializer.bdf_json:
     class: 'Bdf\Queue\Serializer\BdfSerializer'
     arguments:
@@ -88,9 +91,11 @@ services:
 
   bdf_queue.receiver.loader:
     alias: 'Bdf\Queue\Consumer\Receiver\Builder\ReceiverLoaderInterface'
+    public: true
 
   Bdf\Queue\Consumer\Receiver\Builder\ReceiverLoaderInterface:
     alias: 'Bdf\QueueBundle\Consumption\ReceiverLoader'
+    public: true
 
   Bdf\Queue\Consumer\Receiver\Builder\ReceiverLoader:
     alias: 'Bdf\QueueBundle\Consumption\ReceiverLoader'

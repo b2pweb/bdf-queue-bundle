@@ -2,3 +2,9 @@ v1.2.0
 ------
 
  * Imp: Add the reset services receiver based on `Symfony\Component\HttpKernel\DependencyInjection\ServicesResetter`.
+
+v1.2.1
+------
+
+ * Fix: allow use `json` serializer
+ * Fix: `ReceiverLoader` is declared as public on container

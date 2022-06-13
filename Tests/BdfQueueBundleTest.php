@@ -16,13 +16,16 @@ use Bdf\Queue\Console\Command\Failer\ShowCommand;
 use Bdf\Queue\Console\Command\InfoCommand;
 use Bdf\Queue\Console\Command\ProduceCommand;
 use Bdf\Queue\Console\Command\SetupCommand;
+use Bdf\Queue\Consumer\Receiver\Builder\ReceiverLoaderInterface;
 use Bdf\Queue\Destination\DestinationInterface;
 use Bdf\Queue\Destination\DestinationManager;
 use Bdf\Queue\Failer\FailedJobStorageInterface;
 use Bdf\Queue\Failer\MemoryFailedJobRepository;
 use Bdf\Queue\Message\Message;
+use Bdf\Queue\Message\QueuedMessage;
 use Bdf\Queue\Testing\QueueHelper;
 use Bdf\QueueBundle\BdfQueueBundle;
+use Bdf\QueueBundle\Consumption\ReceiverLoader;
 use Bdf\QueueBundle\Tests\Fixtures\TestHandler;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
@@ -52,6 +55,8 @@ class BdfQueueBundleTest extends TestCase
 
         $this->assertInstanceOf(DestinationManager::class, $kernel->getContainer()->get('bdf_queue.destination_manager'));
         $this->assertSame($kernel->getContainer()->get('bdf_queue.destination_manager'), $kernel->getContainer()->get(DestinationManager::class));
+        $this->assertInstanceOf(ReceiverLoader::class, $kernel->getContainer()->get('bdf_queue.receiver.loader'));
+        $this->assertInstanceOf(ReceiverLoader::class, $kernel->getContainer()->get(ReceiverLoaderInterface::class));
     }
 
     /**
@@ -76,6 +81,40 @@ class BdfQueueBundleTest extends TestCase
 
         $helper->consume(1, 'test');
         $this->assertEquals([['foo' => 'bar']], $handler->messages);
+    }
+
+    /**
+     *
+     */
+    public function test_with_json_serializer()
+    {
+        $kernel = new \TestKernel(__DIR__.'/Fixtures/conf_with_json_serializer.yaml');
+        $kernel->boot();
+
+        /** @var DestinationManager $destinations */
+        $destinations = $kernel->getContainer()->get('bdf_queue.destination_manager');
+        $destination = $destinations->create('test');
+
+        $this->assertInstanceOf(DestinationInterface::class, $destination);
+
+        /** @var TestHandler $handler */
+        $handler = $kernel->getContainer()->get(TestHandler::class);
+
+        $helper = new QueueHelper($kernel->getContainer());
+        $destination->send(new Message(new class implements \JsonSerializable {
+            public function jsonSerialize()
+            {
+                return ['foo' => 'bar'];
+            }
+        }));
+
+        /** @var QueuedMessage $message */
+        $message = $helper->peek(1, 'test')[0];
+
+        $this->assertEquals(
+            '{"data":{"foo":"bar"},"queuedAt":' . json_encode($message->queuedAt()) . '}',
+            $message->raw()
+        );
     }
 
     /**

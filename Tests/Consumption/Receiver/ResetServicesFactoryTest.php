@@ -9,15 +9,9 @@ use Bdf\QueueBundle\Consumption\Receiver\ResetServicesFactory;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpKernel\DependencyInjection\ServicesResetter;
 
-/**
- *
- */
 class ResetServicesFactoryTest extends TestCase
 {
-    /**
-     *
-     */
-    public function test_service_instantiation()
+    public function testServiceInstantiation()
     {
         $receiverFactory = $this->createMock(ReceiverFactory::class);
         $resetter = $this->createMock(ServicesResetter::class);
@@ -28,10 +22,7 @@ class ResetServicesFactoryTest extends TestCase
         $this->assertInstanceOf(ResetServices::class, $factory->create($receiverFactory, $next, $resetter));
     }
 
-    /**
-     *
-     */
-    public function test_unknown_services_resetter()
+    public function testUnknownServicesResetter()
     {
         $this->expectException(\LogicException::class);
 

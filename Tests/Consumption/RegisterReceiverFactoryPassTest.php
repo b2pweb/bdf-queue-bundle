@@ -9,15 +9,9 @@ use Bdf\QueueBundle\Tests\Fixtures\FooReceiver;
 use Bdf\QueueBundle\Tests\Fixtures\ReceiverFactoryWrapper;
 use PHPUnit\Framework\TestCase;
 
-/**
- *
- */
 class RegisterReceiverFactoryPassTest extends TestCase
 {
-    /**
-     *
-     */
-    public function test_default_build()
+    public function testDefaultBuild()
     {
         $kernel = new \TestKernel(__DIR__.'/../Fixtures/conf_with_receiver_factory.yaml');
         $kernel->boot();
@@ -34,4 +28,3 @@ class RegisterReceiverFactoryPassTest extends TestCase
         $this->assertSame(['bar'], $receiver->parameters);
     }
 }
-

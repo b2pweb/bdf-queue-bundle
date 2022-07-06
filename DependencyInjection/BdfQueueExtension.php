@@ -19,7 +19,7 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
 
 /**
- * QueueExtension
+ * QueueExtension.
  */
 class BdfQueueExtension extends Extension
 {
@@ -31,7 +31,7 @@ class BdfQueueExtension extends Extension
         $configuration = $this->getConfiguration($configs, $container);
         $config = $this->processConfiguration($configuration, $configs);
 
-        $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
+        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('queue.yaml');
 
         $this->configureConnections($config, $container);
@@ -39,10 +39,6 @@ class BdfQueueExtension extends Extension
         $this->configureFailer($config, $container);
     }
 
-    /**
-     * @param array $config
-     * @param ContainerBuilder $container
-     */
     public function configureConnections(array $config, ContainerBuilder $container): void
     {
         $connectionConfigs = [];
@@ -59,7 +55,7 @@ class BdfQueueExtension extends Extension
                 ->setFactory($options['connection_factory'] ?? [new Reference(ConnectionDriverFactory::class), 'createDriver'])
                 ->setArguments([
                     new Reference('bdf_queue.config_definition.'.$name),
-                    new Reference($this->configureSerializer($options['serializer'], $config['default_serializer']))
+                    new Reference($this->configureSerializer($options['serializer'], $config['default_serializer'])),
                 ]);
         }
 
@@ -73,12 +69,6 @@ class BdfQueueExtension extends Extension
         $container->setParameter('bdf_queue.connection_names', array_keys($connectionConfigs));
     }
 
-    /**
-     * @param array $config
-     * @param string $default
-     *
-     * @return string
-     */
     private function configureSerializer(array $config, string $default): string
     {
         if (isset($config['service'])) {
@@ -88,10 +78,6 @@ class BdfQueueExtension extends Extension
         return 'bdf_queue.serializer.'.($config['id'] ?? $default);
     }
 
-    /**
-     * @param array $config
-     * @param ContainerBuilder $container
-     */
     public function configureDestinations(array $config, ContainerBuilder $container): void
     {
         $destinations = [];
@@ -102,7 +88,7 @@ class BdfQueueExtension extends Extension
 
             // TODO build a builder rule in the container for this destination
             foreach ($options['consumer'] ?? [] as $option => $value) {
-                if ($value !== null) {
+                if (null !== $value) {
                     if (($value[0] ?? '') === '@') {
                         $value = new Reference(ltrim($value, '@'));
                     }
@@ -123,10 +109,6 @@ class BdfQueueExtension extends Extension
         $container->setParameter('bdf_queue.destinations', $destinations);
     }
 
-    /**
-     * @param array $config
-     * @param ContainerBuilder $container
-     */
     public function configureFailer(array $config, ContainerBuilder $container): void
     {
         $container->setParameter('bdf_queue.failer_dsn', $config['failer']);

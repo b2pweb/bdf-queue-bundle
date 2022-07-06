@@ -2,13 +2,13 @@
 
 namespace Bdf\QueueBundle\Consumption\Receiver;
 
+use Bdf\Queue\Consumer\ConsumerInterface;
 use Bdf\Queue\Consumer\DelegateHelper;
 use Bdf\Queue\Consumer\ReceiverInterface;
-use Bdf\Queue\Consumer\ConsumerInterface;
 use Symfony\Component\HttpKernel\DependencyInjection\ServicesResetter;
 
 /**
- * Reset all services registered on kernel.reset
+ * Reset all services registered on "kernel.reset".
  */
 class ResetServices implements ReceiverInterface
 {

@@ -8,11 +8,11 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
 /**
- * Register all the custom factory for connection
+ * Register all the custom factory for connection.
  */
 final class DriverFactoryPass implements CompilerPassInterface
 {
-    const CONFIGURATOR_TAG_NAME = 'bdf_queue.driver_configurator';
+    public const CONFIGURATOR_TAG_NAME = 'bdf_queue.driver_configurator';
 
     /**
      * {@inheritdoc}

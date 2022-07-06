@@ -13,7 +13,7 @@ use Symfony\Component\ExpressionLanguage\Expression;
  */
 final class RegisterReceiverFactoryPass implements CompilerPassInterface
 {
-    const CONFIGURATOR_TAG_NAME = 'bdf_queue.receiver_factory';
+    public const CONFIGURATOR_TAG_NAME = 'bdf_queue.receiver_factory';
 
     /**
      * {@inheritdoc}

@@ -9,9 +9,10 @@ use Psr\Container\ContainerInterface;
 
 /**
  * Create a prime connection from "b2pweb/bdf-queue-prime-adapter".
+ *
  * Use "prime" key as driver to create a prime connection.
  * ex:
- *  prime://{prime_connection_name}?table={db_table}
+ *  `prime://{prime_connection_name}?table={db_table}`
  */
 class PrimeConnectionFactory implements ConnectionDriverConfiguratorInterface
 {
@@ -20,9 +21,6 @@ class PrimeConnectionFactory implements ConnectionDriverConfiguratorInterface
      */
     private $container;
 
-    /**
-     * @param ContainerInterface $container
-     */
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;

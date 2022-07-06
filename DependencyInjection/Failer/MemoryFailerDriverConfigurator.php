@@ -8,7 +8,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
  * Configurator for `MemoryFailedJobRepository`
- * Does not take parameters
+ * Does not take parameters.
  *
  * DSN format: "memory:"
  */

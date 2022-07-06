@@ -16,9 +16,6 @@ use Bdf\Queue\Serializer\SerializerInterface;
 use InvalidArgumentException;
 use Psr\Container\ContainerInterface;
 
-/**
- *
- */
 final class ConnectionDriverFactory implements ConnectionDriverFactoryInterface
 {
     /**
@@ -46,12 +43,9 @@ final class ConnectionDriverFactory implements ConnectionDriverFactoryInterface
      */
     private $configurators = [];
 
-
     /**
-     * @param ContainerInterface $container
      * @param string|null $defaultConnection The default connection name
-     * @param string[] $connectionNames All the connection names
-     * @param string $containerId
+     * @param string[]    $connectionNames   All the connection names
      */
     public function __construct(ContainerInterface $container, string $defaultConnection = null, array $connectionNames = [], string $containerId = 'bdf_queue.connection_definition.%s')
     {
@@ -100,9 +94,7 @@ final class ConnectionDriverFactory implements ConnectionDriverFactoryInterface
     }
 
     /**
-     * Register a custom configurator
-     *
-     * @param ConnectionDriverConfiguratorInterface $configurator
+     * Register a custom configurator.
      */
     public function registerConfigurator(ConnectionDriverConfiguratorInterface $configurator): void
     {
@@ -112,10 +104,7 @@ final class ConnectionDriverFactory implements ConnectionDriverFactoryInterface
     }
 
     /**
-     * Create the connection driver instance
-     *
-     * @param Configuration $config
-     * @param SerializerInterface $serializer
+     * Create the connection driver instance.
      *
      * @return ConnectionDriverInterface
      *
@@ -131,10 +120,7 @@ final class ConnectionDriverFactory implements ConnectionDriverFactoryInterface
     }
 
     /**
-     * Create the known driver instance
-     *
-     * @param Configuration $config
-     * @param SerializerInterface $serializer
+     * Create the known driver instance.
      *
      * @return ConnectionDriverInterface
      *
@@ -146,16 +132,19 @@ final class ConnectionDriverFactory implements ConnectionDriverFactoryInterface
             case 'null':
                 $connection = new NullConnection($config->getConnection());
                 $connection->setConfig($config->toArray());
+
                 return $connection;
 
             case 'memory':
                 $connection = new MemoryConnection($config->getConnection(), $serializer);
                 $connection->setConfig($config->toArray());
+
                 return $connection;
 
             case 'gearman':
                 $connection = new GearmanConnection($config->getConnection(), $serializer);
                 $connection->setConfig($config->toArray());
+
                 return $connection;
 
             case 'amqp-lib':
@@ -165,26 +154,31 @@ final class ConnectionDriverFactory implements ConnectionDriverFactoryInterface
                     $config->has('exchange_resolver') ? $this->container->get($config->get('exchange_resolver')) : null
                 );
                 $connection->setConfig($config->toArray());
+
                 return $connection;
 
             case 'pheanstalk':
                 $connection = new PheanstalkConnection($config->getConnection(), $serializer);
                 $connection->setConfig($config->toArray());
+
                 return $connection;
 
             case 'rdkafka':
                 $connection = new RdKafkaConnection($config->getConnection(), $serializer);
                 $connection->setConfig($config->toArray());
+
                 return $connection;
 
             case 'redis':
                 $connection = new RedisConnection($config->getConnection(), $serializer);
                 $connection->setConfig($config->toArray());
+
                 return $connection;
 
             case 'doctrine':
                 $connection = new DoctrineConnection($config->getConnection(), $serializer);
                 $connection->setConfig($config->toArray());
+
                 return $connection;
         }
 

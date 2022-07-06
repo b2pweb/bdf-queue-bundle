@@ -1,4 +1,5 @@
 <?php
+
 namespace Bdf\QueueBundle\Tests;
 
 require_once __DIR__.'/TestKernel.php';
@@ -8,7 +9,6 @@ use Bdf\Prime\ServiceLocator;
 use Bdf\Queue\Connection\Prime\PrimeConnection;
 use Bdf\Queue\Console\Command\Failer\AbstractFailerCommand;
 use Bdf\Queue\Console\Command\Failer\InitCommand;
-use Bdf\Queue\Destination\DestinationInterface;
 use Bdf\Queue\Destination\DestinationManager;
 use Bdf\Queue\Failer\DbFailedJobRepository;
 use Bdf\Queue\Failer\DbFailedJobStorage;
@@ -29,9 +29,9 @@ class WithPrimeTest extends TestCase
     /**
      * @return void
      */
-    public function test_prime_failer()
+    public function testPrimeFailer()
     {
-        $kernel = new \TestKernel(__DIR__ . '/Fixtures/conf_with_prime_failer.yaml');
+        $kernel = new \TestKernel(__DIR__.'/Fixtures/conf_with_prime_failer.yaml');
         $kernel->boot();
         $console = new Application($kernel);
 
@@ -60,33 +60,30 @@ class WithPrimeTest extends TestCase
     /**
      * @return void
      */
-    public function test_host_missing()
+    public function testHostMissing()
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('The connection name is required on prime failer DSN');
 
-        $kernel = new \TestKernel(__DIR__ . '/Fixtures/conf_with_prime_failer_missing_host.yaml');
+        $kernel = new \TestKernel(__DIR__.'/Fixtures/conf_with_prime_failer_missing_host.yaml');
         $kernel->boot();
     }
 
     /**
      * @return void
      */
-    public function test_table_name_missing()
+    public function testTableNameMissing()
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('The table name is required on prime failer DSN');
 
-        $kernel = new \TestKernel(__DIR__ . '/Fixtures/conf_with_prime_failer_missing_table.yaml');
+        $kernel = new \TestKernel(__DIR__.'/Fixtures/conf_with_prime_failer_missing_table.yaml');
         $kernel->boot();
     }
 
-    /**
-     *
-     */
-    public function test_init_command()
+    public function testInitCommand()
     {
-        $kernel = new \TestKernel(__DIR__ . '/Fixtures/conf_with_prime_failer.yaml');
+        $kernel = new \TestKernel(__DIR__.'/Fixtures/conf_with_prime_failer.yaml');
         $kernel->boot();
         $console = new Application($kernel);
 
@@ -109,12 +106,9 @@ class WithPrimeTest extends TestCase
         return false;
     }
 
-    /**
-     *
-     */
-    public function test_prime_connection()
+    public function testPrimeConnection()
     {
-        $kernel = new \TestKernel(__DIR__ . '/Fixtures/conf_with_prime_connection.yaml');
+        $kernel = new \TestKernel(__DIR__.'/Fixtures/conf_with_prime_connection.yaml');
         $kernel->boot();
 
         /** @var ServiceLocator $prime */

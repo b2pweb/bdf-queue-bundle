@@ -3,7 +3,6 @@
 namespace Bdf\QueueBundle\DependencyInjection\Compiler;
 
 use Bdf\Dsn\Dsn;
-use Bdf\Queue\Failer\DbFailedJobRepository;
 use Bdf\Queue\Failer\FailedJobRepositoryInterface;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -11,11 +10,11 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 /**
  * Register the failer repository on the container and configure the alias to point to the configured failer
  * This compiler pass will parse the failer dsn, and check for configurator drivers registered
- * with tag "bdf_queue.failer.driver_configurator"
+ * with tag "bdf_queue.failer.driver_configurator".
  */
 final class RegisterFailerDriverPass implements CompilerPassInterface
 {
-    const CONFIGURATOR_TAG_NAME = 'bdf_queue.failer.driver_configurator';
+    public const CONFIGURATOR_TAG_NAME = 'bdf_queue.failer.driver_configurator';
 
     /**
      * {@inheritdoc}
@@ -37,10 +36,11 @@ final class RegisterFailerDriverPass implements CompilerPassInterface
             $availableScheme[] = $configurator->scheme();
             if ($scheme === $configurator->scheme()) {
                 $container->setAlias(FailedJobRepositoryInterface::class, $configurator->configure($dsn, $container));
+
                 return;
             }
         }
 
-        throw new \InvalidArgumentException('Unsupported failer DSN scheme ' . $scheme . '. Available : ' . implode(', ', $availableScheme));
+        throw new \InvalidArgumentException('Unsupported failer DSN scheme '.$scheme.'. Available : '.implode(', ', $availableScheme));
     }
 }

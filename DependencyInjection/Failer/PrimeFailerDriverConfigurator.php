@@ -4,8 +4,8 @@ namespace Bdf\QueueBundle\DependencyInjection\Failer;
 
 use Bdf\Dsn\DsnRequest;
 use Bdf\Queue\Console\Command\Failer\InitCommand;
-use Bdf\Queue\Failer\DbFailedJobStorage;
 use Bdf\Queue\Failer\DbFailedJobRepository;
+use Bdf\Queue\Failer\DbFailedJobStorage;
 use Bdf\Queue\Failer\FailedJobRepositoryAdapter;
 use Bdf\Queue\Failer\FailedJobRepositoryInterface;
 use InvalidArgumentException;
@@ -13,7 +13,7 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
 /**
- * Configurator for failer repository using prime
+ * Configurator for failer repository using prime.
  *
  * The package "b2pweb/bdf-queue-prime-adapter" must be installed and
  * "b2pweb/bdf-prime-bundle" configure to enable this failer repository
@@ -73,7 +73,7 @@ final class PrimeFailerDriverConfigurator implements FailerDriverConfiguratorInt
                     'connection' => $host,
                     'table' => $path,
                 ],
-                $dsn->query('maxRows', 50)
+                $dsn->query('maxRows', 50),
             ])
         ;
 

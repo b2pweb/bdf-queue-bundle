@@ -8,15 +8,9 @@ use Bdf\QueueBundle\Consumption\Receiver\ResetServices;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpKernel\DependencyInjection\ServicesResetter;
 
-/**
- *
- */
 class ResetServicesTest extends TestCase
 {
-    /**
-     *
-     */
-    public function test_receive_reset_services()
+    public function testReceiveResetServices()
     {
         $message = new \stdClass();
         $consumer = $this->createMock(ConsumerInterface::class);
@@ -30,5 +24,4 @@ class ResetServicesTest extends TestCase
         $receiver = new ResetServices($next, $resetter);
         $receiver->receive($message, $consumer);
     }
-
 }

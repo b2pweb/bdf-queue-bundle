@@ -19,9 +19,6 @@ use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\HttpKernel\DependencyInjection\ServicesResetter;
 
-/**
- *
- */
 class ReceiverLoaderTest extends TestCase
 {
     private $container;
@@ -43,10 +40,7 @@ class ReceiverLoaderTest extends TestCase
         return new ReceiverLoader($this->container, $configuration, $factory);
     }
 
-    /**
-     *
-     */
-    public function test_unknown_destination_config()
+    public function testUnknownDestinationConfig()
     {
         $loader = $this->getLoader();
         $builder = $loader->load('foo');
@@ -56,10 +50,7 @@ class ReceiverLoaderTest extends TestCase
         $this->assertEquals($chain, (string) $builder->build());
     }
 
-    /**
-     *
-     */
-    public function test_full_config()
+    public function testFullConfig()
     {
         $loader = $this->getLoader([
             'foo' => [
@@ -70,7 +61,7 @@ class ReceiverLoaderTest extends TestCase
                 'max' => '1',
                 'memory' => '128',
                 'no_reset' => true,
-            ]
+            ],
         ]);
         $builder = $loader->load('foo');
 
@@ -80,10 +71,7 @@ class ReceiverLoaderTest extends TestCase
         $this->assertEquals($chain, (string) $builder->build());
     }
 
-    /**
-     *
-     */
-    public function test_without_service_resetter_config()
+    public function testWithoutServiceResetterConfig()
     {
         $loader = $this->getLoader([
             'foo' => [
@@ -93,7 +81,7 @@ class ReceiverLoaderTest extends TestCase
                 'stop_when_empty' => '',
                 'max' => '1',
                 'memory' => '128',
-            ]
+            ],
         ]);
         $builder = $loader->load('foo');
 
@@ -103,28 +91,22 @@ class ReceiverLoaderTest extends TestCase
         $this->assertEquals($chain, (string) $builder->build());
     }
 
-    /**
-     *
-     */
-    public function test_default_config()
+    public function testDefaultConfig()
     {
         $this->container->set('services_resetter', $this->createMock(ServicesResetter::class));
 
         $loader = $this->getLoader([
             'foo' => [
-            ]
+            ],
         ]);
         $builder = $loader->load('foo');
 
         $chain = ResetServices::class.'->'.MessageLoggerReceiver::class.'->'.ProcessorReceiver::class;
 
-        $this->assertEquals($chain, (string)$builder->build());
+        $this->assertEquals($chain, (string) $builder->build());
     }
 
-    /**
-     *
-     */
-    public function test_full_order_config()
+    public function testFullOrderConfig()
     {
         $this->container->set('services_resetter', $this->createMock(ServicesResetter::class));
 
@@ -136,17 +118,16 @@ class ReceiverLoaderTest extends TestCase
                 'stop_when_empty' => '',
                 'max' => '1',
                 'memory' => '128',
-            ]
+            ],
         ]);
         $builder = $loader->load('foo');
 
         $chain = ResetServices::class.'->'.MemoryLimiterReceiver::class.'->'.MessageCountLimiterReceiver::class.'->'.NoFailureReceiver::class.'->'
             .RateLimiterReceiver::class.'->'.RetryMessageReceiver::class.'->'.MessageLoggerReceiver::class.'->'.ProcessorReceiver::class;
 
-        $this->assertEquals($chain, (string)$builder->build());
+        $this->assertEquals($chain, (string) $builder->build());
     }
 }
-
 
 class Container implements ContainerInterface
 {

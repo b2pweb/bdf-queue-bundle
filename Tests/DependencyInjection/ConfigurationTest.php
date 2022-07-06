@@ -37,8 +37,8 @@ class ConfigurationTest extends TestCase
                                 'no_failure' => true,
                                 'stop_when_empty' => true,
                                 'auto_handle' => false,
-                            ]
-                        ]
+                            ],
+                        ],
                     ],
                 ],
                 [
@@ -56,8 +56,8 @@ class ConfigurationTest extends TestCase
                                 'auto_handle' => false,
                                 'handler' => null,
                                 'middlewares' => [],
-                            ]
-                        ]
+                            ],
+                        ],
                     ],
                     'default_connection' => null,
                     'default_serializer' => 'bdf',
@@ -71,7 +71,7 @@ class ConfigurationTest extends TestCase
     /**
      * @dataProvider configDataProvider
      */
-    public function test_valid_config(string $description, array $config, array $expected)
+    public function testValidConfig(string $description, array $config, array $expected)
     {
         $cfg = new Configuration();
         $tree = $cfg->getConfigTreeBuilder()->buildTree();

@@ -11,7 +11,7 @@ use Bdf\Queue\Serializer\SerializerInterface;
 interface ConnectionDriverConfiguratorInterface
 {
     /**
-     * Returns all the supported drivers
+     * Returns all the supported drivers.
      *
      * @return string[]
      */

@@ -17,9 +17,7 @@ class ResetServicesFactory implements ReceiverFactoryProviderInterface
     public function create(ReceiverFactory $factory, ReceiverInterface $receiver, ...$arguments): ReceiverInterface
     {
         if (!isset($arguments[0]) || !($arguments[0] instanceof ServicesResetter)) {
-            throw new \LogicException(
-                sprintf('First argument of %s should be an instance of %s.', ResetServices::class, ServicesResetter::class)
-            );
+            throw new \LogicException(sprintf('First argument of %s should be an instance of %s.', ResetServices::class, ServicesResetter::class));
         }
 
         return new ResetServices($receiver, $arguments[0]);

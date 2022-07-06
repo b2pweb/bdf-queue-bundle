@@ -5,7 +5,7 @@ namespace Bdf\QueueBundle\ConnectionFactory;
 use Bdf\Queue\Connection\Factory\ResolverConnectionDriverFactory;
 
 /**
- * Configuration
+ * Configuration.
  */
 final class Configuration
 {
@@ -17,7 +17,7 @@ final class Configuration
     }
 
     /**
-     * Get the driver name
+     * Get the driver name.
      */
     public function getDriver(): string
     {
@@ -25,7 +25,7 @@ final class Configuration
     }
 
     /**
-     * Get the connection name
+     * Get the connection name.
      */
     public function getConnection(): string
     {
@@ -33,7 +33,7 @@ final class Configuration
     }
 
     /**
-     * Get a configuration key
+     * Get a configuration key.
      */
     public function get(string $key, $default = null)
     {
@@ -41,7 +41,7 @@ final class Configuration
     }
 
     /**
-     * Check whether a configuration key exists
+     * Check whether a configuration key exists.
      */
     public function has(string $key): bool
     {
@@ -49,7 +49,7 @@ final class Configuration
     }
 
     /**
-     * Get the array config
+     * Get the array config.
      */
     public function toArray(): array
     {
@@ -57,7 +57,7 @@ final class Configuration
     }
 
     /**
-     * Create the configuration of the connection driver
+     * Create the configuration of the connection driver.
      */
     public static function createConfiguration(string $name, array $options): self
     {

@@ -32,11 +32,11 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
- * BdfSerializerBundleTest
+ * BdfSerializerBundleTest.
  */
 class BdfQueueBundleTest extends TestCase
 {
-    public function test_default_config()
+    public function testDefaultConfig()
     {
         $builder = $this->createMock(ContainerBuilder::class);
 
@@ -45,10 +45,7 @@ class BdfQueueBundleTest extends TestCase
         $this->assertNull($bundle->build($builder));
     }
 
-    /**
-     *
-     */
-    public function test_kernel()
+    public function testKernel()
     {
         $kernel = new \TestKernel();
         $kernel->boot();
@@ -59,10 +56,7 @@ class BdfQueueBundleTest extends TestCase
         $this->assertInstanceOf(ReceiverLoader::class, $kernel->getContainer()->get(ReceiverLoaderInterface::class));
     }
 
-    /**
-     *
-     */
-    public function test_functional()
+    public function testFunctional()
     {
         $kernel = new \TestKernel(__DIR__.'/Fixtures/conf_functional.yaml');
         $kernel->boot();
@@ -83,10 +77,7 @@ class BdfQueueBundleTest extends TestCase
         $this->assertEquals([['foo' => 'bar']], $handler->messages);
     }
 
-    /**
-     *
-     */
-    public function test_with_json_serializer()
+    public function testWithJsonSerializer()
     {
         $kernel = new \TestKernel(__DIR__.'/Fixtures/conf_with_json_serializer.yaml');
         $kernel->boot();
@@ -101,7 +92,7 @@ class BdfQueueBundleTest extends TestCase
         $handler = $kernel->getContainer()->get(TestHandler::class);
 
         $helper = new QueueHelper($kernel->getContainer());
-        $destination->send(new Message(new class implements \JsonSerializable {
+        $destination->send(new Message(new class() implements \JsonSerializable {
             public function jsonSerialize()
             {
                 return ['foo' => 'bar'];
@@ -112,15 +103,12 @@ class BdfQueueBundleTest extends TestCase
         $message = $helper->peek(1, 'test')[0];
 
         $this->assertEquals(
-            '{"data":{"foo":"bar"},"queuedAt":' . json_encode($message->queuedAt()) . '}',
+            '{"data":{"foo":"bar"},"queuedAt":'.json_encode($message->queuedAt()).'}',
             $message->raw()
         );
     }
 
-    /**
-     *
-     */
-    public function test_connection_options()
+    public function testConnectionOptions()
     {
         $kernel = new \TestKernel();
         $kernel->boot();
@@ -140,14 +128,11 @@ class BdfQueueBundleTest extends TestCase
                 'user' => null,
                 'password' => null,
                 'connection_factory' => null,
-            ]
+            ],
         ], $configs);
     }
 
-    /**
-     *
-     */
-    public function test_destination_options()
+    public function testDestinationOptions()
     {
         $kernel = new \TestKernel();
         $kernel->boot();
@@ -160,10 +145,7 @@ class BdfQueueBundleTest extends TestCase
         ], $configs);
     }
 
-    /**
-     *
-     */
-    public function test_commands()
+    public function testCommands()
     {
         $kernel = new \TestKernel();
         $kernel->boot();
@@ -185,7 +167,7 @@ class BdfQueueBundleTest extends TestCase
     /**
      * @return void
      */
-    public function test_failer()
+    public function testFailer()
     {
         $kernel = new \TestKernel();
         $kernel->boot();
@@ -205,9 +187,9 @@ class BdfQueueBundleTest extends TestCase
     /**
      * @return void
      */
-    public function test_custom_failer()
+    public function testCustomFailer()
     {
-        $kernel = new \TestKernel(__DIR__ . '/Fixtures/conf_with_custom_failer.yaml');
+        $kernel = new \TestKernel(__DIR__.'/Fixtures/conf_with_custom_failer.yaml');
         $kernel->boot();
         $console = new Application($kernel);
 
@@ -223,10 +205,7 @@ class BdfQueueBundleTest extends TestCase
         $this->assertSame($failer, $kernel->getContainer()->get('foo'));
     }
 
-    /**
-     *
-     */
-    public function test_prime_connection()
+    public function testPrimeConnection()
     {
         if (class_exists(PrimeConnection::class)) {
             $this->markTestSkipped('b2pweb/bdf-queue-prime-adapter installed');
@@ -234,7 +213,7 @@ class BdfQueueBundleTest extends TestCase
 
         $this->expectException(\LogicException::class);
 
-        $kernel = new \TestKernel(__DIR__ . '/Fixtures/conf_with_prime_connection.yaml');
+        $kernel = new \TestKernel(__DIR__.'/Fixtures/conf_with_prime_connection.yaml');
         $kernel->boot();
 
         /** @var DestinationManager $destinations */

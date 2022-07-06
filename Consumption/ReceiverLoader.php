@@ -8,7 +8,7 @@ use Bdf\Queue\Consumer\Receiver\Builder\ReceiverLoaderInterface;
 use Psr\Container\ContainerInterface;
 
 /**
- * Loader for receiver configuration
+ * Loader for receiver configuration.
  */
 class ReceiverLoader implements ReceiverLoaderInterface
 {
@@ -27,13 +27,10 @@ class ReceiverLoader implements ReceiverLoaderInterface
      */
     private $configuration;
 
-
     /**
      * ReceiverLoader constructor.
      *
-     * @param ContainerInterface $container
      * @param array[] $configuration
-     * @param ReceiverFactory|null $factory
      */
     public function __construct(ContainerInterface $container, array $configuration, ReceiverFactory $factory = null)
     {
@@ -43,11 +40,9 @@ class ReceiverLoader implements ReceiverLoaderInterface
     }
 
     /**
-     * Load the receiver build from the configuration
+     * Load the receiver build from the configuration.
      *
      * @param string $name The destination name
-     *
-     * @return ReceiverBuilder
      */
     public function load(string $name): ReceiverBuilder
     {
@@ -58,11 +53,6 @@ class ReceiverLoader implements ReceiverLoaderInterface
         return $builder;
     }
 
-    /**
-     * @param ReceiverBuilder $builder
-     *
-     * @param array $config
-     */
     private function configure(ReceiverBuilder $builder, array $config)
     {
         $builder->log();
@@ -121,10 +111,6 @@ class ReceiverLoader implements ReceiverLoaderInterface
 
     /**
      * Convert the given string value in bytes.
-     *
-     * @param string $value
-     *
-     * @return int
      */
     public function convertToBytes(string $value): int
     {

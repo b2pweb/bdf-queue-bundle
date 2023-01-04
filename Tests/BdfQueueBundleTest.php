@@ -29,6 +29,8 @@ use Bdf\QueueBundle\Consumption\ReceiverLoader;
 use Bdf\QueueBundle\Tests\Fixtures\TestHandler;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Command\LazyCommand;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 /**
@@ -93,6 +95,7 @@ class BdfQueueBundleTest extends TestCase
 
         $helper = new QueueHelper($kernel->getContainer());
         $destination->send(new Message(new class() implements \JsonSerializable {
+            #[\ReturnTypeWillChange]
             public function jsonSerialize()
             {
                 return ['foo' => 'bar'];
@@ -151,17 +154,17 @@ class BdfQueueBundleTest extends TestCase
         $kernel->boot();
         $console = new Application($kernel);
 
-        $this->assertInstanceOf(BindCommand::class, $console->get('queue:bind'));
-        $this->assertInstanceOf(ConsumeCommand::class, $console->get('queue:consume'));
-        $this->assertInstanceOf(InfoCommand::class, $console->get('queue:info'));
-        $this->assertInstanceOf(ProduceCommand::class, $console->get('queue:produce'));
-        $this->assertInstanceOf(SetupCommand::class, $console->get('queue:setup'));
+        $this->assertInstanceOf(BindCommand::class, $this->getCommand($console, 'queue:bind'));
+        $this->assertInstanceOf(ConsumeCommand::class, $this->getCommand($console, 'queue:consume'));
+        $this->assertInstanceOf(InfoCommand::class, $this->getCommand($console, 'queue:info'));
+        $this->assertInstanceOf(ProduceCommand::class, $this->getCommand($console, 'queue:produce'));
+        $this->assertInstanceOf(SetupCommand::class, $this->getCommand($console, 'queue:setup'));
 
-        $this->assertInstanceOf(DeleteCommand::class, $console->get('queue:failer:delete'));
-        $this->assertInstanceOf(RetryCommand::class, $console->get('queue:failer:retry'));
-        $this->assertInstanceOf(ShowCommand::class, $console->get('queue:failer:show'));
-        $this->assertInstanceOf(FlushCommand::class, $console->get('queue:failer:flush'));
-        $this->assertInstanceOf(ForgetCommand::class, $console->get('queue:failer:forget'));
+        $this->assertInstanceOf(DeleteCommand::class, $this->getCommand($console, 'queue:failer:delete'));
+        $this->assertInstanceOf(RetryCommand::class, $this->getCommand($console, 'queue:failer:retry'));
+        $this->assertInstanceOf(ShowCommand::class, $this->getCommand($console, 'queue:failer:show'));
+        $this->assertInstanceOf(FlushCommand::class, $this->getCommand($console, 'queue:failer:flush'));
+        $this->assertInstanceOf(ForgetCommand::class, $this->getCommand($console, 'queue:failer:forget'));
     }
 
     /**
@@ -173,7 +176,7 @@ class BdfQueueBundleTest extends TestCase
         $kernel->boot();
         $console = new Application($kernel);
 
-        $command = $console->get('queue:failer:delete');
+        $command = $this->getCommand($console, 'queue:failer:delete');
 
         $r = new \ReflectionProperty(AbstractFailerCommand::class, 'repository');
         $r->setAccessible(true);
@@ -193,7 +196,7 @@ class BdfQueueBundleTest extends TestCase
         $kernel->boot();
         $console = new Application($kernel);
 
-        $command = $console->get('queue:failer:delete');
+        $command = $this->getCommand($console, 'queue:failer:delete');
 
         $r = new \ReflectionProperty(AbstractFailerCommand::class, 'repository');
         $r->setAccessible(true);
@@ -219,5 +222,12 @@ class BdfQueueBundleTest extends TestCase
         /** @var DestinationManager $destinations */
         $destinations = $kernel->getContainer()->get('bdf_queue.destination_manager');
         $destinations->queue('prime', 'queue_name');
+    }
+
+    private function getCommand(Application $application, string $name): Command
+    {
+        $command = $application->get($name);
+
+        return $command instanceof LazyCommand ? $command->getCommand() : $command;
     }
 }

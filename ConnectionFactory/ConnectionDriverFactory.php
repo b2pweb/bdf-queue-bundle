@@ -13,7 +13,6 @@ use Bdf\Queue\Connection\Pheanstalk\PheanstalkConnection;
 use Bdf\Queue\Connection\RdKafka\RdKafkaConnection;
 use Bdf\Queue\Connection\Redis\RedisConnection;
 use Bdf\Queue\Serializer\SerializerInterface;
-use InvalidArgumentException;
 use Psr\Container\ContainerInterface;
 
 final class ConnectionDriverFactory implements ConnectionDriverFactoryInterface
@@ -63,7 +62,7 @@ final class ConnectionDriverFactory implements ConnectionDriverFactoryInterface
         $id = sprintf($this->containerId, $name);
 
         if (!$this->container->has($id)) {
-            throw new InvalidArgumentException('No queue driver has been set for '.$name);
+            throw new \InvalidArgumentException('No queue driver has been set for '.$name);
         }
 
         return $this->container->get($id);
@@ -182,6 +181,6 @@ final class ConnectionDriverFactory implements ConnectionDriverFactoryInterface
                 return $connection;
         }
 
-        throw new InvalidArgumentException('The queue driver "'.$config->getDriver().'" does not exist. Did you forget to add "connection_factory" option ?');
+        throw new \InvalidArgumentException('The queue driver "'.$config->getDriver().'" does not exist. Did you forget to add "connection_factory" option ?');
     }
 }

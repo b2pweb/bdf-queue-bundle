@@ -80,7 +80,7 @@ class ReceiverLoader implements ReceiverLoaderInterface
             $builder->limit($config['limit']);
         }
 
-        if (($config['no_failure'] ?? false)) {
+        if ($config['no_failure'] ?? false) {
             $builder->noFailure();
         }
 
@@ -120,11 +120,11 @@ class ReceiverLoader implements ReceiverLoaderInterface
 
         switch ($unit) {
             case 't': $bytes *= 1024;
-            // no break
+                // no break
             case 'g': $bytes *= 1024;
-            // no break
+                // no break
             case 'm': $bytes *= 1024;
-            // no break
+                // no break
             case 'k': $bytes *= 1024;
         }
 

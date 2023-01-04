@@ -8,7 +8,6 @@ use Bdf\Queue\Failer\DbFailedJobRepository;
 use Bdf\Queue\Failer\DbFailedJobStorage;
 use Bdf\Queue\Failer\FailedJobRepositoryAdapter;
 use Bdf\Queue\Failer\FailedJobRepositoryInterface;
-use InvalidArgumentException;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
@@ -53,11 +52,11 @@ final class PrimeFailerDriverConfigurator implements FailerDriverConfiguratorInt
     public function configure(DsnRequest $dsn, ContainerBuilder $container): string
     {
         if (!$host = $dsn->getHost()) {
-            throw new InvalidArgumentException('The connection name is required on prime failer DSN');
+            throw new \InvalidArgumentException('The connection name is required on prime failer DSN');
         }
 
         if (!$path = trim($dsn->getPath(), '/')) {
-            throw new InvalidArgumentException('The table name is required on prime failer DSN');
+            throw new \InvalidArgumentException('The table name is required on prime failer DSN');
         }
 
         $className = class_exists(DbFailedJobRepository::class)

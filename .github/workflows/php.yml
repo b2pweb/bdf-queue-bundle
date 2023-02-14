@@ -73,8 +73,9 @@ jobs:
   lib_compat:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-        bdf-queue-versions: ['1.1.0', '1.2.0', '1.3.0', '1.4.0', '1.5.0']
+        bdf-queue-versions: ['1.2.0', '1.3.0', '1.4.0', '1.5.0']
     name: Compatibility with bdf-queue v${{ matrix.bdf-queue-versions }}
 
     steps:

@@ -3,6 +3,11 @@
 namespace Bdf\QueueBundle\DependencyInjection;
 
 use Bdf\Queue\Connection\ConnectionDriverInterface;
+use Bdf\Queue\Destination\CachedDestinationFactory;
+use Bdf\Queue\Destination\ConfigurationDestinationFactory;
+use Bdf\Queue\Destination\DestinationFactory;
+use Bdf\Queue\Destination\DestinationFactoryInterface;
+use Bdf\Queue\Destination\DsnDestinationFactory;
 use Bdf\QueueBundle\ConnectionFactory\Configuration as DriverConfiguration;
 use Bdf\QueueBundle\ConnectionFactory\ConnectionDriverConfiguratorInterface;
 use Bdf\QueueBundle\ConnectionFactory\ConnectionDriverFactory;
@@ -16,6 +21,7 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use Symfony\Component\DependencyInjection\Parameter;
 use Symfony\Component\DependencyInjection\Reference;
 
 /**
@@ -37,6 +43,8 @@ class BdfQueueExtension extends Extension
         $this->configureConnections($config, $container);
         $this->configureDestinations($config, $container);
         $this->configureFailer($config, $container);
+
+        $this->configureBdfQueue15DestinationFactory($container);
     }
 
     public function configureConnections(array $config, ContainerBuilder $container): void
@@ -118,6 +126,29 @@ class BdfQueueExtension extends Extension
             ->setPublic(false)
             ->addTag(RegisterFailerDriverPass::CONFIGURATOR_TAG_NAME)
         ;
+    }
+
+    private function configureBdfQueue15DestinationFactory(ContainerBuilder $container): void
+    {
+        // bdf-queue 1.5 is not installed
+        if (!class_exists(DestinationFactory::class)) {
+            return;
+        }
+
+        $container->register(DestinationFactory::class, DestinationFactory::class)
+            ->setArguments([
+                new Reference('bdf_queue.connection_factory'),
+                new Parameter('bdf_queue.destinations'),
+                false,
+            ])
+        ;
+
+        $container->setAlias(DestinationFactoryInterface::class, DestinationFactory::class);
+
+        // Mark the old destination factories as deprecated
+        $container->getDefinition(CachedDestinationFactory::class)->setDeprecated('b2pweb/bdf-queue', '1.5', 'The "%service_id%" service is deprecated, use '.DestinationFactoryInterface::class.' service instead');
+        $container->getDefinition(ConfigurationDestinationFactory::class)->setDeprecated('b2pweb/bdf-queue', '1.5', 'The "%service_id%" service is deprecated, use '.DestinationFactoryInterface::class.' service instead');
+        $container->getDefinition(DsnDestinationFactory::class)->setDeprecated('b2pweb/bdf-queue', '1.5', 'The "%service_id%" service is deprecated, use '.DestinationFactoryInterface::class.' service instead');
     }
 
     /**

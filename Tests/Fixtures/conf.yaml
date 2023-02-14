@@ -35,3 +35,12 @@ prime:
   migration:
     connection: 'my_connection'
     path: '%kernel.project_dir%/src/Migration'
+
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+
+  Bdf\QueueBundle\Tests\Fixtures\GetDestinationFactory:
+    public: true
+    class: Bdf\QueueBundle\Tests\Fixtures\GetDestinationFactory

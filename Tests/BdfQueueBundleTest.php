@@ -17,8 +17,12 @@ use Bdf\Queue\Console\Command\InfoCommand;
 use Bdf\Queue\Console\Command\ProduceCommand;
 use Bdf\Queue\Console\Command\SetupCommand;
 use Bdf\Queue\Consumer\Receiver\Builder\ReceiverLoaderInterface;
+use Bdf\Queue\Destination\CachedDestinationFactory;
+use Bdf\Queue\Destination\ConfigurationDestinationFactory;
+use Bdf\Queue\Destination\DestinationFactory;
 use Bdf\Queue\Destination\DestinationInterface;
 use Bdf\Queue\Destination\DestinationManager;
+use Bdf\Queue\Destination\DsnDestinationFactory;
 use Bdf\Queue\Failer\FailedJobStorageInterface;
 use Bdf\Queue\Failer\MemoryFailedJobRepository;
 use Bdf\Queue\Message\Message;
@@ -26,6 +30,7 @@ use Bdf\Queue\Message\QueuedMessage;
 use Bdf\Queue\Testing\QueueHelper;
 use Bdf\QueueBundle\BdfQueueBundle;
 use Bdf\QueueBundle\Consumption\ReceiverLoader;
+use Bdf\QueueBundle\Tests\Fixtures\GetDestinationFactory;
 use Bdf\QueueBundle\Tests\Fixtures\TestHandler;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
@@ -222,6 +227,26 @@ class BdfQueueBundleTest extends TestCase
         /** @var DestinationManager $destinations */
         $destinations = $kernel->getContainer()->get('bdf_queue.destination_manager');
         $destinations->queue('prime', 'queue_name');
+    }
+
+    public function testDestinationFactoryInstance()
+    {
+        $kernel = new \TestKernel();
+        $kernel->boot();
+
+        /** @var GetDestinationFactory $service */
+        $service = $kernel->getContainer()->get(GetDestinationFactory::class);
+
+        if (class_exists(DestinationFactory::class)) {
+            $this->assertInstanceOf(DestinationFactory::class, $service->destinationFactory);
+        } else {
+            $this->assertInstanceOf(CachedDestinationFactory::class, $service->destinationFactory);
+        }
+
+        $this->assertInstanceOf(DsnDestinationFactory::class, $service->legacyDsnDestinationFactory);
+        $this->assertInstanceOf(ConfigurationDestinationFactory::class, $service->legacyConfigurationDestinationFactory);
+        $this->assertEquals(['custom_bus', 'b2p_bus'], $service->legacyConfigurationDestinationFactory->destinationNames());
+        $this->assertEquals(['custom_bus', 'b2p_bus'], $service->destinationFactory->destinationNames());
     }
 
     private function getCommand(Application $application, string $name): Command

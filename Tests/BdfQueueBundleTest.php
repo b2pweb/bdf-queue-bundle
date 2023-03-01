@@ -9,8 +9,6 @@ use Bdf\Queue\Console\Command\BindCommand;
 use Bdf\Queue\Console\Command\ConsumeCommand;
 use Bdf\Queue\Console\Command\Failer\AbstractFailerCommand;
 use Bdf\Queue\Console\Command\Failer\DeleteCommand;
-use Bdf\Queue\Console\Command\Failer\FlushCommand;
-use Bdf\Queue\Console\Command\Failer\ForgetCommand;
 use Bdf\Queue\Console\Command\Failer\RetryCommand;
 use Bdf\Queue\Console\Command\Failer\ShowCommand;
 use Bdf\Queue\Console\Command\InfoCommand;
@@ -168,8 +166,6 @@ class BdfQueueBundleTest extends TestCase
         $this->assertInstanceOf(DeleteCommand::class, $this->getCommand($console, 'queue:failer:delete'));
         $this->assertInstanceOf(RetryCommand::class, $this->getCommand($console, 'queue:failer:retry'));
         $this->assertInstanceOf(ShowCommand::class, $this->getCommand($console, 'queue:failer:show'));
-        $this->assertInstanceOf(FlushCommand::class, $this->getCommand($console, 'queue:failer:flush'));
-        $this->assertInstanceOf(ForgetCommand::class, $this->getCommand($console, 'queue:failer:forget'));
     }
 
     /**

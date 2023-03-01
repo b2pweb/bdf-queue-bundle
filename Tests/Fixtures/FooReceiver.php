@@ -9,11 +9,7 @@ class FooReceiver implements ReceiverInterface
 {
     use DelegateHelper;
 
-    public $parameters;
-
-    public function __construct(ReceiverInterface $delegate, array $parameters)
+    public function __construct(public array $parameters)
     {
-        $this->delegate = $delegate;
-        $this->parameters = $parameters;
     }
 }

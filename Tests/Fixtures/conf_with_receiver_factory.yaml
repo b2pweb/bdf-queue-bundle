@@ -4,6 +4,10 @@ services:
     class: 'Bdf\QueueBundle\Tests\Fixtures\FooReceiverFactory'
     tags: ['bdf_queue.receiver_factory']
 
+  Bdf\QueueBundle\Tests\Fixtures\LegacyReceiverFactory:
+    class: 'Bdf\QueueBundle\Tests\Fixtures\LegacyReceiverFactory'
+    tags: ['bdf_queue.receiver_factory']
+
   Bdf\QueueBundle\Tests\Fixtures\ReceiverFactoryWrapper:
     public: true
     class: 'Bdf\QueueBundle\Tests\Fixtures\ReceiverFactoryWrapper'

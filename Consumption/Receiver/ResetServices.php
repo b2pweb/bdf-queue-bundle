@@ -14,21 +14,14 @@ class ResetServices implements ReceiverInterface
 {
     use DelegateHelper;
 
-    /**
-     * @var ServicesResetter
-     */
-    private $servicesResetter;
-
-    public function __construct(ReceiverInterface $delegate, ServicesResetter $servicesResetter)
+    public function __construct(private ServicesResetter $servicesResetter)
     {
-        $this->delegate = $delegate;
-        $this->servicesResetter = $servicesResetter;
     }
 
-    public function receive($message, ConsumerInterface $consumer): void
+    public function receive($message, ConsumerInterface $next): void
     {
         try {
-            $this->delegate->receive($message, $consumer);
+            $next->receive($message, $next);
         } finally {
             $this->servicesResetter->reset();
         }

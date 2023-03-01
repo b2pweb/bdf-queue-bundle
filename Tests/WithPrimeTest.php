@@ -16,6 +16,7 @@ use Bdf\Queue\Failer\FailedJobRepositoryAdapter;
 use Bdf\Queue\Failer\FailedJobStorageInterface;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Component\Console\Command\LazyCommand;
 
 class WithPrimeTest extends TestCase
 {
@@ -36,6 +37,10 @@ class WithPrimeTest extends TestCase
         $console = new Application($kernel);
 
         $command = $console->get('queue:failer:delete');
+
+        if ($command instanceof LazyCommand) {
+            $command = $command->getCommand();
+        }
 
         $r = new \ReflectionProperty(AbstractFailerCommand::class, 'repository');
         $r->setAccessible(true);
@@ -87,7 +92,12 @@ class WithPrimeTest extends TestCase
         $kernel->boot();
         $console = new Application($kernel);
 
-        $this->assertInstanceOf(InitCommand::class, $console->get('queue:prime:failer:init'));
+        $command = $console->get('queue:prime:failer:init');
+        if ($command instanceof LazyCommand) {
+            $command = $command->getCommand();
+        }
+
+        $this->assertInstanceOf(InitCommand::class, $command);
     }
 
     private function isPrimeFailer($storage): bool

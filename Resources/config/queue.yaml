@@ -158,28 +158,6 @@ services:
     tags:
       - { name: 'console.command' }
 
-  bdf_queue.failer.flush_command:
-    class: 'Bdf\Queue\Console\Command\Failer\FlushCommand'
-    deprecated:
-      message: 'The "%service_id%" service is deprecated, use "Bdf\Queue\Console\Command\Failer\DeleteCommand" instead'
-      package: 'bdf-queue'
-      version: '1.1'
-    arguments:
-      - '@bdf_queue.failer'
-    tags:
-      - { name: 'console.command' }
-
-  bdf_queue.failer.forget_command:
-    class: 'Bdf\Queue\Console\Command\Failer\ForgetCommand'
-    deprecated:
-      message: 'The "%service_id%" service is deprecated, use "Bdf\Queue\Console\Command\Failer\DeleteCommand" instead'
-      package: 'bdf-queue'
-      version: '1.1'
-    arguments:
-      - '@bdf_queue.failer'
-    tags:
-      - { name: 'console.command' }
-
   Bdf\Queue\Console\Command\Failer\DeleteCommand:
     class: 'Bdf\Queue\Console\Command\Failer\DeleteCommand'
     arguments:

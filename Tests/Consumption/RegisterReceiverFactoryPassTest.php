@@ -18,11 +18,26 @@ class RegisterReceiverFactoryPassTest extends TestCase
 
         $container = $kernel->getContainer();
 
+        /** @var ReceiverFactoryWrapper $wrapper */
+        $wrapper = $container->get(ReceiverFactoryWrapper::class);
+        $receiver = $wrapper->factory->create('foo', ['bar']);
+
+        $this->assertInstanceOf(FooReceiver::class, $receiver);
+        $this->assertSame(['bar'], $receiver->parameters);
+    }
+
+    public function testLegacyBuild()
+    {
+        $kernel = new \TestKernel(__DIR__.'/../Fixtures/conf_with_receiver_factory.yaml');
+        $kernel->boot();
+
+        $container = $kernel->getContainer();
+
         $delegate = $this->createMock(ReceiverInterface::class);
 
         /** @var ReceiverFactoryWrapper $wrapper */
         $wrapper = $container->get(ReceiverFactoryWrapper::class);
-        $receiver = $wrapper->factory->create('foo', [$delegate, 'bar']);
+        $receiver = $wrapper->factory->create('legacy', [$delegate, 'bar']);
 
         $this->assertInstanceOf(FooReceiver::class, $receiver);
         $this->assertSame(['bar'], $receiver->parameters);

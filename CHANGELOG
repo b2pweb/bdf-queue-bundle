@@ -1,3 +1,10 @@
+v1.3.0
+------
+
+ * Imp: Add compatibility with bdf-queue 1.4.
+ * Imp: Drop support of php 7.
+ * Deprecates `Bdf\QueueBundle\Consumption\ReceiverFactoryProviderInterface` use `Bdf\QueueBundle\Consumption\ReceiverFactoryInterface`.
+
 v1.2.0
 ------
 

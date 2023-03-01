@@ -3,7 +3,6 @@
 namespace Bdf\QueueBundle\Tests\Consumption\Receiver;
 
 use Bdf\Queue\Consumer\Receiver\Builder\ReceiverFactory;
-use Bdf\Queue\Consumer\ReceiverInterface;
 use Bdf\QueueBundle\Consumption\Receiver\ResetServices;
 use Bdf\QueueBundle\Consumption\Receiver\ResetServicesFactory;
 use PHPUnit\Framework\TestCase;
@@ -15,11 +14,10 @@ class ResetServicesFactoryTest extends TestCase
     {
         $receiverFactory = $this->createMock(ReceiverFactory::class);
         $resetter = $this->createMock(ServicesResetter::class);
-        $next = $this->createMock(ReceiverInterface::class);
 
         $factory = new ResetServicesFactory();
 
-        $this->assertInstanceOf(ResetServices::class, $factory->create($receiverFactory, $next, $resetter));
+        $this->assertInstanceOf(ResetServices::class, $factory->create($receiverFactory, $resetter));
     }
 
     public function testUnknownServicesResetter()
@@ -27,10 +25,9 @@ class ResetServicesFactoryTest extends TestCase
         $this->expectException(\LogicException::class);
 
         $receiverFactory = $this->createMock(ReceiverFactory::class);
-        $next = $this->createMock(ReceiverInterface::class);
 
         $factory = new ResetServicesFactory();
 
-        $this->assertInstanceOf(ResetServices::class, $factory->create($receiverFactory, $next));
+        $this->assertInstanceOf(ResetServices::class, $factory->create($receiverFactory));
     }
 }

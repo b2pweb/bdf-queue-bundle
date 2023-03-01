@@ -11,6 +11,7 @@ use Bdf\Queue\Destination\DsnDestinationFactory;
 use Bdf\QueueBundle\ConnectionFactory\Configuration as DriverConfiguration;
 use Bdf\QueueBundle\ConnectionFactory\ConnectionDriverConfiguratorInterface;
 use Bdf\QueueBundle\ConnectionFactory\ConnectionDriverFactory;
+use Bdf\QueueBundle\Consumption\ReceiverFactoryInterface;
 use Bdf\QueueBundle\Consumption\ReceiverFactoryProviderInterface;
 use Bdf\QueueBundle\Consumption\ReceiverLoader;
 use Bdf\QueueBundle\DependencyInjection\Compiler\DriverFactoryPass;
@@ -107,6 +108,10 @@ class BdfQueueExtension extends Extension
         }
 
         $container->registerForAutoconfiguration(ReceiverFactoryProviderInterface::class)
+            ->setShared(false)
+            ->setPublic(false)
+            ->addTag(RegisterReceiverFactoryPass::CONFIGURATOR_TAG_NAME);
+        $container->registerForAutoconfiguration(ReceiverFactoryInterface::class)
             ->setShared(false)
             ->setPublic(false)
             ->addTag(RegisterReceiverFactoryPass::CONFIGURATOR_TAG_NAME);

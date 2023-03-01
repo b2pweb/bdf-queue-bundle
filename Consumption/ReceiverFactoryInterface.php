@@ -21,8 +21,8 @@ interface ReceiverFactoryInterface
     /**
      * Create the receiver.
      *
-     * @param ReceiverFactory   $factory   The factory of receivers. Contains the logger.
-     * @param array             $arguments the arguments usually provide by the builder
+     * @param ReceiverFactory $factory   The factory of receivers. Contains the logger.
+     * @param array           $arguments The arguments usually provide by the builder
      */
     public function create(ReceiverFactory $factory, ...$arguments): ReceiverInterface;
 }

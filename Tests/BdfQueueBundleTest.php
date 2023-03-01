@@ -9,8 +9,6 @@ use Bdf\Queue\Console\Command\BindCommand;
 use Bdf\Queue\Console\Command\ConsumeCommand;
 use Bdf\Queue\Console\Command\Failer\AbstractFailerCommand;
 use Bdf\Queue\Console\Command\Failer\DeleteCommand;
-use Bdf\Queue\Console\Command\Failer\FlushCommand;
-use Bdf\Queue\Console\Command\Failer\ForgetCommand;
 use Bdf\Queue\Console\Command\Failer\RetryCommand;
 use Bdf\Queue\Console\Command\Failer\ShowCommand;
 use Bdf\Queue\Console\Command\InfoCommand;

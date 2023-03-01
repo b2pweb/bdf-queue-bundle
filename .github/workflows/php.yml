@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php-versions: ['7.2', '7.3', '7.4', '8.0', '8.1', '8.2']
+        php-versions: ['8.0', '8.1', '8.2']
     name: PHP ${{ matrix.php-versions }}
 
     steps:
@@ -55,7 +55,7 @@ jobs:
       - name: Install PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 7.4
+          php-version: 8.0
           extensions: json
           ini-values: date.timezone=Europe/Paris
       - name: Check PHP Version
@@ -75,7 +75,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        bdf-queue-versions: ['1.2.0', '1.3.0', '1.4.0', '1.5.0']
+        bdf-queue-versions: ['1.4.0', '1.5.0']
     name: Compatibility with bdf-queue v${{ matrix.bdf-queue-versions }}
 
     steps:
@@ -89,7 +89,7 @@ jobs:
       - name: Install PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: 7.4
+          php-version: 8.0
           extensions: json
           ini-values: date.timezone=Europe/Paris
       - name: Check PHP Version

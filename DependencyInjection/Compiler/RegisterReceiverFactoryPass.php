@@ -15,9 +15,6 @@ final class RegisterReceiverFactoryPass implements CompilerPassInterface
 {
     public const CONFIGURATOR_TAG_NAME = 'bdf_queue.receiver_factory';
 
-    /**
-     * {@inheritdoc}
-     */
     public function process(ContainerBuilder $container)
     {
         $factory = $container->getDefinition(ReceiverFactory::class);

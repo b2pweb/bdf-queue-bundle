@@ -24,9 +24,6 @@ class Configuration implements ConfigurationInterface
         $this->debug = (bool) $debug;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder('bdf_queue');

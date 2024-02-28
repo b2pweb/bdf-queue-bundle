@@ -4,9 +4,9 @@ use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Routing\RouteCollectionBuilder;
 
-class TestKernel extends \Symfony\Component\HttpKernel\Kernel
+class TestKernel extends Symfony\Component\HttpKernel\Kernel
 {
-    use \Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
+    use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 
     private $config;
 
@@ -20,9 +20,9 @@ class TestKernel extends \Symfony\Component\HttpKernel\Kernel
     public function registerBundles(): iterable
     {
         return [
-            new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
-            new \Bdf\QueueBundle\BdfQueueBundle(),
-            new \Bdf\PrimeBundle\PrimeBundle(),
+            new Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
+            new Bdf\QueueBundle\BdfQueueBundle(),
+            new Bdf\PrimeBundle\PrimeBundle(),
         ];
     }
 

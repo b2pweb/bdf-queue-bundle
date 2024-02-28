@@ -14,9 +14,6 @@ final class DriverFactoryPass implements CompilerPassInterface
 {
     public const CONFIGURATOR_TAG_NAME = 'bdf_queue.driver_configurator';
 
-    /**
-     * {@inheritdoc}
-     */
     public function process(ContainerBuilder $container)
     {
         $factory = $container->getDefinition(ConnectionDriverFactory::class);

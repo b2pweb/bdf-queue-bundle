@@ -32,7 +32,7 @@ class ReceiverLoader implements ReceiverLoaderInterface
      *
      * @param array[] $configuration
      */
-    public function __construct(ContainerInterface $container, array $configuration, ReceiverFactory $factory = null)
+    public function __construct(ContainerInterface $container, array $configuration, ?ReceiverFactory $factory = null)
     {
         $this->container = $container;
         $this->configuration = $configuration;

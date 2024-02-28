@@ -26,17 +26,11 @@ class PrimeConnectionFactory implements ConnectionDriverConfiguratorInterface
         $this->container = $container;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getSupportedDrivers(): array
     {
         return ['prime'];
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function configure(Configuration $config, SerializerInterface $serializer): ConnectionDriverInterface
     {
         if (!class_exists(PrimeConnection::class)) {

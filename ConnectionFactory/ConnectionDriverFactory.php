@@ -46,7 +46,7 @@ final class ConnectionDriverFactory implements ConnectionDriverFactoryInterface
      * @param string|null $defaultConnection The default connection name
      * @param string[]    $connectionNames   All the connection names
      */
-    public function __construct(ContainerInterface $container, string $defaultConnection = null, array $connectionNames = [], string $containerId = 'bdf_queue.connection_definition.%s')
+    public function __construct(ContainerInterface $container, ?string $defaultConnection = null, array $connectionNames = [], string $containerId = 'bdf_queue.connection_definition.%s')
     {
         $this->container = $container;
         $this->containerId = $containerId;
@@ -54,9 +54,6 @@ final class ConnectionDriverFactory implements ConnectionDriverFactoryInterface
         $this->connectionNames = $connectionNames;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function create(?string $name): ConnectionDriverInterface
     {
         $id = sprintf($this->containerId, $name);
@@ -68,25 +65,16 @@ final class ConnectionDriverFactory implements ConnectionDriverFactoryInterface
         return $this->container->get($id);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function defaultConnectionName(): string
     {
         return $this->defaultConnection;
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function defaultConnection(): ConnectionDriverInterface
     {
         return $this->create($this->defaultConnection);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function connectionNames(): array
     {
         return $this->connectionNames;

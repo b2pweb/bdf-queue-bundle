@@ -26,17 +26,11 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 final class PrimeFailerDriverConfigurator implements FailerDriverConfiguratorInterface
 {
-    /**
-     * {@inheritdoc}
-     */
     public function scheme(): string
     {
         return 'prime';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function available(ContainerBuilder $container): bool
     {
         if (!$container->has('prime')) {
@@ -46,9 +40,6 @@ final class PrimeFailerDriverConfigurator implements FailerDriverConfiguratorInt
         return class_exists(DbFailedJobRepository::class) || class_exists(DbFailedJobStorage::class);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function configure(DsnRequest $dsn, ContainerBuilder $container): string
     {
         if (!$host = $dsn->getHost()) {

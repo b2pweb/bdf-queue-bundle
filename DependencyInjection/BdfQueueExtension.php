@@ -30,9 +30,6 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 class BdfQueueExtension extends Extension
 {
-    /**
-     * {@inheritDoc}
-     */
     public function load(array $configs, ContainerBuilder $container)
     {
         $configuration = $this->getConfiguration($configs, $container);
@@ -156,9 +153,6 @@ class BdfQueueExtension extends Extension
         $container->getDefinition(DsnDestinationFactory::class)->setDeprecated('b2pweb/bdf-queue', '1.5', 'The "%service_id%" service is deprecated, use '.DestinationFactoryInterface::class.' service instead');
     }
 
-    /**
-     * {@inheritDoc}
-     */
     public function getConfiguration(array $config, ContainerBuilder $container): Configuration
     {
         return new Configuration($container->getParameter('kernel.debug'));

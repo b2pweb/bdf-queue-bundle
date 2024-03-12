@@ -107,6 +107,10 @@ class ReceiverLoader implements ReceiverLoaderInterface
         if ($config['auto_handle'] ?? false) {
             $builder->jobProcessor();
         }
+
+        if (isset($config['bind'])) {
+            $builder->bind((array) $config['bind']);
+        }
     }
 
     /**

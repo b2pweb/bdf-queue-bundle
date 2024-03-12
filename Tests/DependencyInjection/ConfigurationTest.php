@@ -55,6 +55,49 @@ class ConfigurationTest extends TestCase
                                 'stop_when_empty' => true,
                                 'auto_handle' => false,
                                 'handler' => null,
+                                'bind' => [],
+                                'middlewares' => [],
+                            ],
+                        ],
+                    ],
+                    'default_connection' => null,
+                    'default_serializer' => 'bdf',
+                    'failer' => 'memory:',
+                    'connections' => [],
+                ],
+            ],
+            [
+                'with bind',
+                [
+                    'destinations' => [
+                        'foo' => [
+                            'consumer' => [
+                                'bind' => [
+                                    'Foo' => 'App\Event\Foo',
+                                    'Bar' => 'App\Event\Bar',
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'destinations' => [
+                        'foo' => [
+                            'consumer' => [
+                                'bind' => [
+                                    'Foo' => 'App\Event\Foo',
+                                    'Bar' => 'App\Event\Bar',
+                                ],
+                                'handler' => null,
+                                'retry' => null,
+                                'max' => null,
+                                'limit' => null,
+                                'memory' => null,
+                                'save' => null,
+                                'no_failure' => null,
+                                'no_reset' => null,
+                                'stop_when_empty' => null,
+                                'auto_handle' => null,
                                 'middlewares' => [],
                             ],
                         ],

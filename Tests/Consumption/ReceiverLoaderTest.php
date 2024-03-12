@@ -4,6 +4,7 @@ namespace Bdf\QueueBundle\Tests\Consumption;
 
 use Bdf\Instantiator\Instantiator;
 use Bdf\Instantiator\InstantiatorInterface;
+use Bdf\Queue\Consumer\Receiver\Binder\BinderReceiver;
 use Bdf\Queue\Consumer\Receiver\Builder\ReceiverFactory;
 use Bdf\Queue\Consumer\Receiver\MemoryLimiterReceiver;
 use Bdf\Queue\Consumer\Receiver\MessageCountLimiterReceiver;
@@ -67,6 +68,23 @@ class ReceiverLoaderTest extends TestCase
 
         $chain = MemoryLimiterReceiver::class.'->'.MessageCountLimiterReceiver::class.'->'.NoFailureReceiver::class.'->'
             .RateLimiterReceiver::class.'->'.RetryMessageReceiver::class.'->'.MessageLoggerReceiver::class.'->'.ProcessorReceiver::class;
+
+        $this->assertEquals($chain, (string) $builder->build());
+    }
+
+    public function testWithBind()
+    {
+        $loader = $this->getLoader([
+            'foo' => [
+                'bind' => [
+                    'Foo' => 'App\Event\Foo',
+                    'Bar' => 'App\Event\Bar',
+                ],
+            ],
+        ]);
+        $builder = $loader->load('foo');
+
+        $chain = BinderReceiver::class.'->'.MessageLoggerReceiver::class.'->'.ProcessorReceiver::class;
 
         $this->assertEquals($chain, (string) $builder->build());
     }

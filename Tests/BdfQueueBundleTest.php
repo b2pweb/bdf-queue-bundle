@@ -28,6 +28,8 @@ use Bdf\Queue\Message\QueuedMessage;
 use Bdf\Queue\Testing\QueueHelper;
 use Bdf\QueueBundle\BdfQueueBundle;
 use Bdf\QueueBundle\Consumption\ReceiverLoader;
+use Bdf\QueueBundle\Tests\Fixtures\Bar;
+use Bdf\QueueBundle\Tests\Fixtures\Foo;
 use Bdf\QueueBundle\Tests\Fixtures\GetDestinationFactory;
 use Bdf\QueueBundle\Tests\Fixtures\TestHandler;
 use PHPUnit\Framework\TestCase;
@@ -80,6 +82,33 @@ class BdfQueueBundleTest extends TestCase
 
         $helper->consume(1, 'test');
         $this->assertEquals([['foo' => 'bar']], $handler->messages);
+    }
+
+    public function testWithBind()
+    {
+        $kernel = new \TestKernel(__DIR__.'/Fixtures/conf_with_bind.yaml');
+        $kernel->boot();
+
+        /** @var DestinationManager $destinations */
+        $destinations = $kernel->getContainer()->get('bdf_queue.destination_manager');
+        $destination = $destinations->create('test');
+
+        $this->assertInstanceOf(DestinationInterface::class, $destination);
+
+        /** @var TestHandler $handler */
+        $handler = $kernel->getContainer()->get(TestHandler::class);
+
+        $helper = new QueueHelper($kernel->getContainer());
+        $destination->send((new Message(new Foo('azerty')))->setName('Foo'));
+        $destination->send((new Message(new Bar(42)))->setName('Bar'));
+        $destination->send((new Message(new Bar(42)))->setName('Baz'));
+
+        $helper->consume(3, 'test');
+        $this->assertEquals([
+            new Foo('azerty'),
+            new Bar(42),
+            ['value' => 42], // Not bound to a class
+        ], $handler->messages);
     }
 
     public function testWithJsonSerializer()

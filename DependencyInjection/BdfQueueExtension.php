@@ -19,6 +19,7 @@ use Bdf\QueueBundle\DependencyInjection\Compiler\RegisterFailerDriverPass;
 use Bdf\QueueBundle\DependencyInjection\Compiler\RegisterReceiverFactoryPass;
 use Bdf\QueueBundle\DependencyInjection\Failer\FailerDriverConfiguratorInterface;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\DependencyInjection\Argument\ServiceClosureArgument;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
@@ -56,13 +57,22 @@ class BdfQueueExtension extends Extension
                 ->setFactory([DriverConfiguration::class, 'createConfiguration'])
                 ->setArguments([$name, $options]);
 
-            $container->register('bdf_queue.connection_definition.'.$name, ConnectionDriverInterface::class)
+            $driverDefinition = $container->register('bdf_queue.connection_definition.'.$name, ConnectionDriverInterface::class)
                 ->setPublic(true)
-                ->setFactory($options['connection_factory'] ?? [new Reference(ConnectionDriverFactory::class), 'createDriver'])
-                ->setArguments([
-                    new Reference('bdf_queue.config_definition.'.$name),
-                    new Reference($this->configureSerializer($options['serializer'], $config['default_serializer'])),
-                ]);
+                ->setArgument(0, new Reference('bdf_queue.config_definition.'.$name))
+            ;
+
+            if (empty($options['serializer']['from_url'])) {
+                $driverDefinition
+                    ->setFactory($options['connection_factory'] ?? [new Reference(ConnectionDriverFactory::class), 'createDriver'])
+                    ->setArgument(1, new Reference($this->configureSerializer($options['serializer'], $config['default_serializer'])))
+                ;
+            } else {
+                $driverDefinition
+                    ->setFactory($options['connection_factory'] ?? [new Reference(ConnectionDriverFactory::class), 'createDriverAndResolveSerializerFromUrl'])
+                    ->setArgument(1, new ServiceClosureArgument(new Reference($this->configureSerializer($options['serializer'], $config['default_serializer']))))
+                ;
+            }
         }
 
         $container->registerForAutoconfiguration(ConnectionDriverConfiguratorInterface::class)

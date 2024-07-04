@@ -65,16 +65,20 @@ services:
   #Serializer
   bdf_queue.serializer.native:
     class: 'Bdf\Queue\Serializer\Serializer'
+    public: true
 
   bdf_queue.serializer.bdf:
     class: 'Bdf\Queue\Serializer\BdfSerializer'
+    public: true
     arguments: ['@?bdf_serializer']
 
   bdf_queue.serializer.json:
     class: 'Bdf\Queue\Serializer\JsonSerializer'
+    public: true
 
   bdf_queue.serializer.bdf_json:
     class: 'Bdf\Queue\Serializer\BdfSerializer'
+    public: true
     arguments:
       - '@?bdf_serializer'
       - 'json'

@@ -1,0 +1,38 @@
+bdf_queue:
+  default_connection: 'gearman'
+  default_serializer: 'native'
+  connections:
+    memory:
+      url: 'memory:'
+      serializer:
+        id: 'native'
+  destinations:
+    b2p_bus:
+      url: 'queue://memory/b2p_bus'
+      consumer:
+        handler: 'var_dump'
+        middlewares:
+          - 'test_receiver'
+
+prime:
+  default_connection: 'my_connection'
+  connections:
+    my_connection: 'sqlite::memory:'
+
+  migration:
+    connection: 'my_connection'
+    path: '%kernel.project_dir%/src/Migration'
+
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+
+  Bdf\QueueBundle\Tests\Fixtures\GetDestinationFactory:
+    public: true
+    class: Bdf\QueueBundle\Tests\Fixtures\GetDestinationFactory
+
+  test_receiver:
+    class: Bdf\QueueBundle\Tests\Fixtures\FooReceiver
+    arguments:
+      - {'foo': 'bar'}

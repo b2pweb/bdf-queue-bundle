@@ -1,0 +1,30 @@
+bdf_queue:
+  default_connection: 'gearman'
+  default_serializer: 'native'
+  connections:
+    queue:
+      url: 'gearman://127.0.0.1?serializer=json'
+      serializer:
+        from_url: true
+      options:
+        client-timeout: 1
+
+    no_defined:
+      url: 'gearman://127.0.0.1'
+      serializer:
+        from_url: true
+
+prime:
+  default_connection: 'my_connection'
+  connections:
+    my_connection: 'sqlite::memory:'
+
+  migration:
+    connection: 'my_connection'
+    path: '%kernel.project_dir%/src/Migration'
+
+services:
+  Bdf\QueueBundle\Tests\Fixtures\GetConnection:
+    class: Bdf\QueueBundle\Tests\Fixtures\GetConnection
+    public: true
+    autowire: true

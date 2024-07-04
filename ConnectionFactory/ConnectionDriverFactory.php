@@ -107,6 +107,26 @@ final class ConnectionDriverFactory implements ConnectionDriverFactoryInterface
     }
 
     /**
+     * Create the connection driver instance, and resolve the serializer from the URL option "serializer".
+     *
+     * @param Configuration                  $config                    The driver configuration
+     * @param \Closure():SerializerInterface $defaultSerializerResolver The default serializer resolver. Used when the serializer is not set in the configuration.
+     *
+     * @return ConnectionDriverInterface
+     *
+     * @internal
+     */
+    public function createDriverAndResolveSerializerFromUrl(Configuration $config, \Closure $defaultSerializerResolver)
+    {
+        $serializer = $config->has('url_serializer')
+            ? $this->container->get('bdf_queue.serializer.'.$config->get('url_serializer'))
+            : $defaultSerializerResolver()
+        ;
+
+        return $this->createDriver($config, $serializer);
+    }
+
+    /**
      * Create the known driver instance.
      *
      * @return ConnectionDriverInterface

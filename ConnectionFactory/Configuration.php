@@ -66,6 +66,11 @@ final class Configuration
 
         if (isset($options['url'])) {
             $preparedConfig = ResolverConnectionDriverFactory::parseDsn($options['url']);
+
+            if (isset($preparedConfig['serializer'])) {
+                $preparedConfig['url_serializer'] = $preparedConfig['serializer'];
+                unset($preparedConfig['serializer']);
+            }
         }
         if (!empty($options['options'])) {
             $options = array_merge($options, $options['options']);

@@ -4,6 +4,7 @@ namespace Bdf\QueueBundle\Tests;
 
 require_once __DIR__.'/TestKernel.php';
 
+use Bdf\Queue\Connection\ConnectionDriverInterface;
 use Bdf\Queue\Connection\Prime\PrimeConnection;
 use Bdf\Queue\Console\Command\BindCommand;
 use Bdf\Queue\Console\Command\ConsumeCommand;
@@ -25,11 +26,14 @@ use Bdf\Queue\Failer\FailedJobStorageInterface;
 use Bdf\Queue\Failer\MemoryFailedJobRepository;
 use Bdf\Queue\Message\Message;
 use Bdf\Queue\Message\QueuedMessage;
+use Bdf\Queue\Serializer\JsonSerializer;
+use Bdf\Queue\Serializer\Serializer;
 use Bdf\Queue\Testing\QueueHelper;
 use Bdf\QueueBundle\BdfQueueBundle;
 use Bdf\QueueBundle\Consumption\ReceiverLoader;
 use Bdf\QueueBundle\Tests\Fixtures\Bar;
 use Bdf\QueueBundle\Tests\Fixtures\Foo;
+use Bdf\QueueBundle\Tests\Fixtures\GetConnection;
 use Bdf\QueueBundle\Tests\Fixtures\GetDestinationFactory;
 use Bdf\QueueBundle\Tests\Fixtures\TestHandler;
 use PHPUnit\Framework\TestCase;
@@ -154,7 +158,7 @@ class BdfQueueBundleTest extends TestCase
             'gearman' => [
                 'driver' => null,
                 'host' => null,
-                'serializer' => ['id' => 'native'],
+                'serializer' => ['id' => 'native', 'from_url' => false],
                 'queue' => null,
                 'url' => 'gearman://127.0.0.1',
                 'options' => ['client_timeout' => 1],
@@ -252,6 +256,20 @@ class BdfQueueBundleTest extends TestCase
         /** @var DestinationManager $destinations */
         $destinations = $kernel->getContainer()->get('bdf_queue.destination_manager');
         $destinations->queue('prime', 'queue_name');
+    }
+
+    public function testWithSerializerFromUrl()
+    {
+        $kernel = new \TestKernel(__DIR__.'/Fixtures/conf_with_serializer_from_dsn.yaml');
+        $kernel->boot();
+
+        /** @var ConnectionDriverInterface $connection */
+        $connection = $kernel->getContainer()->get(GetConnection::class)->get('queue');
+        $this->assertInstanceOf(JsonSerializer::class, $connection->serializer());
+
+        /** @var ConnectionDriverInterface $connection */
+        $connection = $kernel->getContainer()->get(GetConnection::class)->get('no_defined');
+        $this->assertInstanceOf(Serializer::class, $connection->serializer());
     }
 
     public function testDestinationFactoryInstance()

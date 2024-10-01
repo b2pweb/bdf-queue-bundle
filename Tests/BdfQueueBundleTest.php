@@ -126,7 +126,7 @@ class BdfQueueBundleTest extends TestCase
         $handler = $kernel->getContainer()->get(TestHandler::class);
 
         $helper = new QueueHelper($kernel->getContainer());
-        $destination->send(new Message(new class() implements \JsonSerializable {
+        $destination->send(new Message(new class implements \JsonSerializable {
             #[\ReturnTypeWillChange]
             public function jsonSerialize()
             {

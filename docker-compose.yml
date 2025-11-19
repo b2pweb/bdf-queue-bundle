@@ -1,13 +1,11 @@
-version: '3.5'
-
 services:
   bdf:
     build:
-      context: ..
-      dockerfile: docker/Dockerfile
+      context: .
+      dockerfile: Dockerfile
     image: local/bdf:latest
     volumes:
-      - ../:/srv/bdf
+      - ./:/srv/bdf
     environment:
       - APP_ENV=dev
 

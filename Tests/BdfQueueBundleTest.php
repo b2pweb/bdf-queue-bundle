@@ -213,7 +213,7 @@ class BdfQueueBundleTest extends TestCase
         $command = $this->getCommand($console, 'queue:failer:delete');
 
         $r = new \ReflectionProperty(AbstractFailerCommand::class, 'repository');
-        $r->setAccessible(true);
+        PHP_VERSION_ID >= 80100 or $r->setAccessible(true);
 
         /** @var FailedJobStorageInterface $failer */
         $failer = $r->getValue($command);
@@ -233,7 +233,7 @@ class BdfQueueBundleTest extends TestCase
         $command = $this->getCommand($console, 'queue:failer:delete');
 
         $r = new \ReflectionProperty(AbstractFailerCommand::class, 'repository');
-        $r->setAccessible(true);
+        PHP_VERSION_ID >= 80100 or $r->setAccessible(true);
 
         /** @var FailedJobStorageInterface $failer */
         $failer = $r->getValue($command);

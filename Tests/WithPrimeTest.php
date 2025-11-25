@@ -43,7 +43,7 @@ class WithPrimeTest extends TestCase
         }
 
         $r = new \ReflectionProperty(AbstractFailerCommand::class, 'repository');
-        $r->setAccessible(true);
+        PHP_VERSION_ID >= 80100 or $r->setAccessible(true);
 
         /** @var FailedJobStorageInterface $failer */
         $failer = $r->getValue($command);
@@ -108,7 +108,7 @@ class WithPrimeTest extends TestCase
 
         if ($storage instanceof FailedJobRepositoryAdapter) {
             $r = new \ReflectionProperty(FailedJobRepositoryAdapter::class, 'storage');
-            $r->setAccessible(true);
+            PHP_VERSION_ID >= 80100 or $r->setAccessible(true);
 
             return $r->getValue($storage) instanceof DbFailedJobStorage;
         }

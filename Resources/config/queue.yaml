@@ -82,7 +82,7 @@ services:
     arguments:
       - '@?bdf_serializer'
       - 'json'
-      - [include_type: false, remove_default_value: false]
+      - { include_type: false, remove_default_value: false }
 
 
   #Consumer

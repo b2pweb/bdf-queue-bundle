@@ -6,6 +6,7 @@ use Bdf\Queue\Consumer\Receiver\NextInterface;
 use Bdf\QueueBundle\Consumption\Receiver\ResetServices;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpKernel\DependencyInjection\ServicesResetter;
+use Symfony\Component\HttpKernel\DependencyInjection\ServicesResetterInterface;
 
 class ResetServicesTest extends TestCase
 {
@@ -13,7 +14,7 @@ class ResetServicesTest extends TestCase
     {
         $message = new \stdClass();
 
-        $resetter = $this->createMock(ServicesResetter::class);
+        $resetter = $this->createMock(\interface_exists(ServicesResetterInterface::class) ? ServicesResetterInterface::class : ServicesResetter::class);
         $resetter->expects($this->once())->method('reset');
 
         $next = $this->createMock(NextInterface::class);

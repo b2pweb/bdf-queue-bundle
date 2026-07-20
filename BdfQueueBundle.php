@@ -15,7 +15,7 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
  */
 class BdfQueueBundle extends Bundle
 {
-    public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container): void
     {
         $container->addCompilerPass(new DriverFactoryPass());
         $container->addCompilerPass(new RegisterFailerDriverPass());

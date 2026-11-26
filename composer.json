@@ -23,7 +23,7 @@
         "symfony/phpunit-bridge": "^6.0|~7.0|~8.0",
         "symfony/yaml": "^6.0|~7.0|~8.0",
         "symfony/console": "^6.0|~7.0|~8.0",
-        "b2pweb/bdf-prime-bundle": "dev-feature-FRAM-233-prime-v3 as 1.11.0",
+        "b2pweb/bdf-prime-bundle": "~1.2",
         "friendsofphp/php-cs-fixer": "~3.0"
     },
     "conflict": {

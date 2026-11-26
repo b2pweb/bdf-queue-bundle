@@ -5,6 +5,7 @@ namespace Bdf\QueueBundle\Consumption\Receiver;
 use Bdf\Queue\Consumer\ConsumerInterface;
 use Bdf\Queue\Consumer\DelegateHelper;
 use Bdf\Queue\Consumer\ReceiverInterface;
+use Symfony\Component\DependencyInjection\ServicesResetter as ContainerResetter;
 use Symfony\Component\HttpKernel\DependencyInjection\ServicesResetter;
 use Symfony\Component\HttpKernel\DependencyInjection\ServicesResetterInterface;
 
@@ -15,7 +16,7 @@ class ResetServices implements ReceiverInterface
 {
     use DelegateHelper;
 
-    public function __construct(private ServicesResetter|ServicesResetterInterface|\Symfony\Component\DependencyInjection\ServicesResetter $servicesResetter)
+    public function __construct(private ServicesResetter|ServicesResetterInterface|ContainerResetter $servicesResetter)
     {
     }
 

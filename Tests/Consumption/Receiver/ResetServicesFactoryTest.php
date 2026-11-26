@@ -7,13 +7,14 @@ use Bdf\QueueBundle\Consumption\Receiver\ResetServices;
 use Bdf\QueueBundle\Consumption\Receiver\ResetServicesFactory;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpKernel\DependencyInjection\ServicesResetter;
+use Symfony\Component\HttpKernel\DependencyInjection\ServicesResetterInterface;
 
 class ResetServicesFactoryTest extends TestCase
 {
     public function testServiceInstantiation()
     {
         $receiverFactory = $this->createMock(ReceiverFactory::class);
-        $resetter = $this->createMock(ServicesResetter::class);
+        $resetter = $this->createMock(\interface_exists(ServicesResetterInterface::class) ? ServicesResetterInterface::class : ServicesResetter::class);
 
         $factory = new ResetServicesFactory();
 

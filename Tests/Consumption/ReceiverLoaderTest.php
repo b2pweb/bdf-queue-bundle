@@ -19,6 +19,7 @@ use Bdf\QueueBundle\Consumption\ReceiverLoader;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\HttpKernel\DependencyInjection\ServicesResetter;
+use Symfony\Component\HttpKernel\DependencyInjection\ServicesResetterInterface;
 
 class ReceiverLoaderTest extends TestCase
 {
@@ -111,7 +112,7 @@ class ReceiverLoaderTest extends TestCase
 
     public function testDefaultConfig()
     {
-        $this->container->set('services_resetter', $this->createMock(ServicesResetter::class));
+        $this->container->set('services_resetter', $this->createMock(\interface_exists(ServicesResetterInterface::class) ? ServicesResetterInterface::class : ServicesResetter::class));
 
         $loader = $this->getLoader([
             'foo' => [
@@ -126,7 +127,7 @@ class ReceiverLoaderTest extends TestCase
 
     public function testFullOrderConfig()
     {
-        $this->container->set('services_resetter', $this->createMock(ServicesResetter::class));
+        $this->container->set('services_resetter', $this->createMock(\interface_exists(ServicesResetterInterface::class) ? ServicesResetterInterface::class : ServicesResetter::class));
 
         $loader = $this->getLoader([
             'foo' => [

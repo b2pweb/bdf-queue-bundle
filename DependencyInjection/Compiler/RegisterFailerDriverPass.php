@@ -16,7 +16,7 @@ final class RegisterFailerDriverPass implements CompilerPassInterface
 {
     public const CONFIGURATOR_TAG_NAME = 'bdf_queue.failer.driver_configurator';
 
-    public function process(ContainerBuilder $container)
+    public function process(ContainerBuilder $container): void
     {
         $dsn = Dsn::parse($container->getParameter('bdf_queue.failer_dsn'));
         $scheme = $dsn->getScheme();
